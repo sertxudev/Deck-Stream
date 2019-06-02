@@ -1,0 +1,41 @@
+{
+  "name": "deckstream",
+  "version": "0.0.1",
+  "description": "Video streaming software designed for live events",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "Sertxu Developer <dev.sertxu@gmail.com>",
+  "license": "MIT",
+  "build": {
+    "productName": "Deck Stream",
+    "appId": "com.sertxudeveloper.deckstream",
+    "mac": {
+      "category": "com.sertxudeveloper.deckstream"
+    },
+    "fileAssociations": [
+      {
+        "ext": "dsf",
+        "name": "Deck Stream File",
+        "role": "Editor"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-localshortcut": "^3.1.0",
+    "electron-store": "^3.2.0",
+    "jquery": "^3.4.1",
+    "wallpaper": "^4.4.0"
+  },
+  "devDependencies": {
+    "@vue/devtools": "^5.1.0",
+    "devtron": "^1.4.0",
+    "electron": "^6.0.0-beta.4",
+    "electron-builder": "^20.41.0",
+    "vue-devtools": "^5.0.0-beta.1"
+  }
+}

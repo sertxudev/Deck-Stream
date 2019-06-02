@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+main {
+  /* height: calc(100% - 100px) */
+  height: calc(100% - 50px);
+  user-select: none;
+}
+
+.nav-tabs {
+  border-top: 1px solid #dee2e6;
+  border-bottom: none;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: 0;
+  margin-top: -1px;
+}
+
+#deckstream {
+  background: #1a1a1a;
+}
+
+header {
+  height: 50px;
+  justify-content: space-evenly;
+}
+
+header>div {
+  font-size: 20px;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+}
+
+.card {
+  width: 90px;
+  background-color: #4d4d4d;
+  border-radius: calc(.25rem - 1px);
+}
+
+.card.preview {
+  background-color: var(--success);
+}
+
+.card>img, .card>video {
+  height: 65px;
+  border-top-left-radius: calc(.25rem - 2px);
+  border-top-right-radius: calc(.25rem - 2px);
+}
+
+.card small {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 75%;
+}
+
+@keyframes flash-time {
+  from, 50%, to {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.25;
+  }
+}
+
+.flash-time {
+  animation: flash-time 2s infinite;
+  font-weight: bold;
+}
+
+@keyframes flash-danger {
+  from, 50%, to {
+    background-color: var(--danger)
+  }
+  25%, 75% {
+    background-color: inherit
+  }
+}
+
+.flash-danger {
+  animation: flash-danger 1.5s infinite;
+}
+
+.flash-danger .flash-time {
+  color: white!important
+}

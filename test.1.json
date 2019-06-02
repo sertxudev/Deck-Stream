@@ -1,0 +1,124 @@
+{
+  "name": "Proyecto de Prueba",
+  "description": "Este es un proyecto de prueba durante la versión de desarrollo",
+  "decks": [
+    {
+      "name": "Mesa 1",
+      "outputs": [
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        },
+        {
+          "x": 160,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        }
+      ],
+      "clips": [
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Ribera\\2 ESO A - Vuelta al mundo\\Secuencia 01.mp4",
+          "name": "Vuelta al mundo",
+          "posterTime": 1
+        },
+        {
+          "path": "Z:\\Espejo\\!Vault\\Producciones\\[2016 - 2020]\\2018\\[01] Enero\\[01 - Enero] Producción 18 Cumpleaños Sergio\\Proyecto Exportado [1080p]_1.mp4",
+          "name": "18 Cumpleaños Sergio",
+          "posterTime": 100
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Simarro\\Tener siempre espeanza\\Secuencia 01.mp4",
+          "name": "Tener siempre esperanza",
+          "posterTime": 20
+        },
+        {
+          "path": "S:\\Descargas\\videoplayback.mp4",
+          "name": "Promotional video",
+          "posterTime": 0
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Ribera\\1 BAT - Viajar en el tiempo\\Secuencia 01.mp4",
+          "name": "Viajar en el tiempo",
+          "posterTime": 0
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Simarro\\1 BAT X - Ser Millonario\\Background.mp4",
+          "name": "Ser Millonario",
+          "posterTime": 0
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Simarro\\Viajar\\Secuencia 01.mp4",
+          "name": "Viajar",
+          "posterTime": 0
+        },
+        {
+          "path": "http://www.convertinmp4.com/redirect.php?video=WhWc3b3KhnY&v=NKTZtjFJf09cUiXymyBRN6C5copsd4QS&hd=1",
+          "name": "Spring - Blender",
+          "posterTime": 0
+        }
+      ]
+    },
+    {
+      "name": "Mesa 2",
+      "outputs": [
+        {
+          "x": 960,
+          "y": -900,
+          "width": 814,
+          "height": 867
+        }
+      ],
+      "clips": [
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Ribera\\1 BAT - Viajar en el tiempo\\Secuencia 01.mp4",
+          "name": "Viajar en el tiempo",
+          "posterTime": 0
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Simarro\\1 BAT X - Ser Millonario\\Background.mp4",
+          "name": "Ser Millonario",
+          "posterTime": 0
+        },
+        {
+          "path": "S:\\Producciones\\[2016 - 2020]\\2019\\[03] Marzo\\[25 - Marzo] Acro 2019\\Proyecciones\\Retro\\Simarro\\Viajar\\Secuencia 01.mp4",
+          "name": "Viajar",
+          "posterTime": 0
+        }
+      ]
+    }
+  ],
+  "activeDeck": 0
+}
