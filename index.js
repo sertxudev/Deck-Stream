@@ -9,7 +9,7 @@ global.winout = []
 global.filePath = null
 
 function createWindow() {
-  
+
   wallpaper.get().then(path => originalWallpaper = path)
   wallpaper.set('./assets/black.jpg')
 
@@ -19,8 +19,19 @@ function createWindow() {
 
   global.win.webContents.on('did-finish-load', () => win.show())
 
+  // global.win.on('closed', () => global.win = null)
 
-  global.win.on('closed', () => global.win = null)
+  global.win.on('close', function (e) {
+    var choice = electron.dialog.showMessageBoxSync(this, {
+      type: 'question',
+      buttons: ['Yes','No'],
+      defaultId: 1,
+      noLink: true,
+      title: 'Confirm',
+      message: 'Are you sure you want to quit?'
+    })
+    if (choice == 1) e.preventDefault()
+  })
 
   if (process.argv[1]) methods.application.openWith()
 
