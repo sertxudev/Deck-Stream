@@ -1,4 +1,6 @@
 const electron = require('electron')
+const { BrowserWindow, ipcMain } = require('electron')
+const electronLocalshortcut = require('electron-localshortcut')
 
 function getFullscreenDisplays() {
   let displays = getDisplays()
@@ -9,7 +11,7 @@ function getFullscreenDisplays() {
     let id = `display${index}`
     let label = `Display${index} (${display.width}x${display.height})`
     let accelerator = `CommandOrControl+Shift+${index}`
-    fullscreenDisplays.push({ id, label, accelerator, type: 'radio', ...display })
+    fullscreenDisplays.push({ id, label, accelerator, click: createOutput, ...display })
   })
 
   return fullscreenDisplays
@@ -23,7 +25,7 @@ function getWindowedDisplays() {
     ++index
     let id = `display${index}`
     let label = `Display${index} (${display.width}x${display.height})`
-    windowedDisplays.push({ id, label, type: 'radio', ...display })
+    windowedDisplays.push({ id, label, click: createOutput, ...display })
   })
 
   return windowedDisplays
@@ -36,6 +38,27 @@ function getDisplays() {
   })
 
   return displays
+}
+
+function createOutput(menuItem) {
+  let index = menuItem.id.split('display')[1]
+  let display = getDisplays()[index-1]
+
+  global.win.send('get-activeDeck')
+  ipcMain.once('get-activeDeck', (event, argv) => {
+    let window = new BrowserWindow({
+      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
+      title: argv.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+    })
+
+    window.loadFile('../renderer/livestream/index.html')
+    electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
+    if (menuItem.accelerator) window.setFullScreen(true)
+    window.setMenu(null)
+
+    global.win.send('add-output', window.id)
+  })
+  
 }
 
 function checkOffscreenPoints(window, screen) {
