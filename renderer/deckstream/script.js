@@ -61,11 +61,19 @@ $(document).ready(() => {
         $(`#video-${index}`)[0].onended = () => clearTimes(index)
       })
 
-      ipcRenderer.on('get-data', (event) => {
-        ipcRenderer.send('get-data', this.$data)
-      })
+      ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', this.$data))
+      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', this.decks[this.activeDeck]))
+      ipcRenderer.on('add-output', (event, id) => this.decks[this.activeDeck].outputs.push(id))
     }
   })
+
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault()
+    let clip = $(event.target).parent()[0]
+    console.log(clip)
+    // aContextMenu.popup(remote.getCurrentWindow())
+  })
+
 
 })
 
