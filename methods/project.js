@@ -24,13 +24,13 @@ function newProject() {
 
 function openProject() {
   let filePaths = file.openBrowser()
-  if (!filePaths ||!filePaths[0]) return false
+  if (!filePaths || !filePaths[0]) return false
   global.filePath = filePaths[0]
   global.win.reload()
 }
 
 function openRecent(menuItem) {
-  if(!fs.existsSync(menuItem.sublabel)) {
+  if (!fs.existsSync(menuItem.sublabel)) {
     console.error('File not found')
     removeRecent(menuItem.sublabel)
     return false
@@ -81,6 +81,31 @@ function saveAs() {
     return save()
   })
 }
+
+function changeSettings(menuItem, window) {
+  let modal = new BrowserWindow({
+    height: 300, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
+    maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
+  })
+  modal.loadFile('./modals/settings/index.html')
+  modal.once('ready-to-show', () => modal.show())
+  modal.setMenu(null)
+
+  modal.on('close', () => ipcMain.removeListener('save-settings', saveSettingsEvent))
+
+  ipcMain.once('save-settings', saveSettingsEvent)
+
+  function saveSettingsEvent(event, argv) {
+    modal.destroy()
+
+    if (!argv.cancelled) {
+      global.win.send('update-settings', { name: argv.name, description: argv.description })
+      global.win.setTitle('Deck Stream - ' + argv.name)
+      return true
+    }
+
+    return false
+  }
 }
 
 function processDataSave(data) {
@@ -108,4 +133,5 @@ module.exports.addRecent = addRecent
 module.exports.removeRecent = removeRecent
 module.exports.save = save
 module.exports.saveAs = saveAs
+module.exports.changeSettings = changeSettings
 module.exports.processDataSave = processDataSave

@@ -12,7 +12,7 @@ module.exports = () => {
       { id: 'save', label: 'Save', accelerator: 'CommandOrControl+S', click: project.save },
       { id: 'saveAs', label: 'Save As...', accelerator: 'CommandOrControl+Shift+S', click: project.saveAs },
       { type: 'separator' },
-      { id: 'settings', label: 'Settings', accelerator: 'CommandOrControl+Shift+C' },
+      { id: 'settings', label: 'Settings', accelerator: 'CommandOrControl+Shift+C', click: project.changeSettings },
     ]
   }
 }
