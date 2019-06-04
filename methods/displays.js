@@ -42,7 +42,7 @@ function getDisplays() {
 
 function createOutput(menuItem) {
   let index = menuItem.id.split('display')[1]
-  let display = getDisplays()[index-1]
+  let display = getDisplays()[index - 1]
 
   global.win.send('get-activeDeck')
   ipcMain.once('get-activeDeck', (event, argv) => {
@@ -58,7 +58,14 @@ function createOutput(menuItem) {
 
     global.win.send('add-output', window.id)
   })
-  
+}
+
+function disableOutputs() {
+  global.win.send('get-activeDeck')
+  ipcMain.once('get-activeDeck', (event, argv) => {
+    argv.outputs.forEach(id => BrowserWindow.fromId(id).destroy())
+    global.win.send('disable-outputs')
+  })
 }
 
 function checkOffscreenPoints(window, screen) {
@@ -85,4 +92,5 @@ function checkOffscreenPoints(window, screen) {
 module.exports.getFullscreenDisplays = getFullscreenDisplays
 module.exports.getWindowedDisplays = getWindowedDisplays
 module.exports.getDisplays = getDisplays
+module.exports.disableOutputs = disableOutputs
 module.exports.checkOffscreenPoints = checkOffscreenPoints

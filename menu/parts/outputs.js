@@ -4,7 +4,7 @@ module.exports = () => {
   return {
     label: 'Outputs',
     submenu: [
-      { id: 'disabled', label: 'Disabled' },
+      { id: 'disabled', label: 'Disabled', click: displays.disableOutputs },
       { type: 'separator' },
       { id: 'fullscreen', label: 'Fullscreen', submenu: displays.getFullscreenDisplays() },
       { id: 'windowed', label: 'Windowed', submenu: displays.getWindowedDisplays() },
