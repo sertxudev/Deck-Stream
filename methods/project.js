@@ -73,9 +73,14 @@ function save() {
 }
 
 function saveAs() {
-  let path = dialog.showSaveDialogSync({ filters: [{ name: 'Deck Stream File', extensions: ['dsf'] }] })
-  global.filePath = path
-  return save()
+  global.win.webContents.send('get-name')
+  ipcMain.once('get-name', (event, name) => {
+    let path = dialog.showSaveDialogSync({ filters: [{ name: 'Deck Stream File', extensions: ['dsf']}], defaultPath: `*/${name}` })
+    if (!path) return false
+    global.filePath = path
+    return save()
+  })
+}
 }
 
 function processDataSave(data) {
