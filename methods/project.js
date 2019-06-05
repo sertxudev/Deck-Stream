@@ -84,7 +84,7 @@ function saveAs() {
 
 function changeSettings(menuItem, window) {
   let modal = new BrowserWindow({
-    height: 300, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
+    height: 320, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/settings/index.html')
