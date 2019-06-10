@@ -62,7 +62,7 @@ $(document).ready(() => {
       })
 
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', this.$data))
-      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', this.decks[this.activeDeck]))
+      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', {deck: this.decks[this.activeDeck], index: this.activeDeck}))
       ipcRenderer.on('add-output', (event, id) => this.decks[this.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => this.decks[this.activeDeck].outputs = [])
       ipcRenderer.on('update-settings', (event, argv) => {
