@@ -1,8 +1,10 @@
+const clips = require('../../methods/clips')
+
 module.exports = () => {
   return {
     label: 'Clip',
     submenu: [
-      { id: 'new', label: 'New...' },
+      { id: 'new', label: 'New...', click: clips.addNew },
       { type: 'separator' },
       { id: 'rename', label: 'Rename' },
       { id: 'showInExplorer', label: 'Show in Explorer' },

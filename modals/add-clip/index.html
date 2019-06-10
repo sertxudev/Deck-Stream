@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Add Clip</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="file">Asset</label>
+          <button id="file" class="form-control">Select file...</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="path">Name</label>
+          <input type="text" class="form-control" id="name" placeholder="Name">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="group">Group</label>
+          <select name="group" id="group" class="form-control"></select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 text-right">
+        <button id="cancel" class="btn btn-secondary">Cancel</button>
+        <button id="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { ipcRenderer, remote } = require('electron')
+    let data = {}
+    let filePath = ''
+
+    document.getElementById('file').addEventListener('click', () => {
+      let file = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
+        filters: [{
+          extensions: [
+            'mp4', 'webm', 'ogg', // Video Extensions
+            'jpg', 'jpeg', 'png', 'gif' // Image Extensions
+          ]
+        }],
+        properties: ['openFile']
+      })
+
+      if (file !== undefined) {
+        filePath = file[0]
+        document.getElementById('file').innerText = filePath.split('\\').pop()
+      }
+    })
+
+    ipcRenderer.on('get-groups', (event, data) => {
+      let groups = ''
+      groups += '<option value="-1" disabled selected hidden>Group to be added</option>'
+      data.forEach((el, index) => {
+        groups += '<option value="' + index + '">' + el.name + '</option>'
+      })
+      document.getElementById('group').innerHTML = groups
+    })
+
+    document.getElementById('submit').addEventListener('click', () => {
+      let name = document.getElementById('name').value
+      let group = document.getElementById('group').value
+
+      if (!group || group == -1) {
+        document.getElementById('group').classList.add('invalid')
+        return false
+      }
+
+      if (!name.trim().length) {
+        document.getElementById('name').classList.add('invalid')
+        return false
+      }
+
+      ipcRenderer.send('add-clip', { cancelled: false, path: filePath, name, group: parseInt(group) })
+    })
+
+    document.getElementById('cancel').addEventListener('click', () => {
+      ipcRenderer.send('add-clip', { cancelled: true })
+    })
+
+  </script>
+</body>
+
+</html>

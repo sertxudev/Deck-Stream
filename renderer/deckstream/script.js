@@ -70,6 +70,7 @@ $(document).ready(() => {
         this.description = argv.description
       })
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
+      ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({name: argv.name, path: argv.path, posterTime: 0}))
     }
   })
 
