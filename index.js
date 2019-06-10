@@ -13,7 +13,7 @@ function createWindow() {
   wallpaper.get().then(path => originalWallpaper = path)
   wallpaper.set('./assets/black.jpg')
 
-  global.win = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true, webSecurity: false, show: false } })
+  global.win = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true, webSecurity: false }, show: false })
   global.win.loadFile('./renderer/deckstream/index.html')
   // win.webContents.openDevTools({ mode: 'detach' })
 
