@@ -82,35 +82,3 @@ app.on('activate', () => {
   // icono del dock es clicado y no hay otras ventanas abiertas.
   if (global.win === null) createWindow()
 })
-
-// En este archivo puedes incluir el resto del código del proceso principal de
-// tu aplicación. También puedes ponerlos en archivos separados y requerirlos aquí.
-
-// function screenModified() {
-//   buildMenu()
-//   // global.win.webContents.send('get-data')
-//   // ipcMain.once('get-data', (event, data) => {
-//   //   data = methods.project.processDataSave(data)
-//   // })
-// }
-
-// function newProject(menuItem, browserWindow, event) {
-//   let json = {}
-//   let modal = new BrowserWindow({
-//     height: 300,
-//     width: 400,
-//     alwaysOnTop: true,
-//     modal: true,
-//     parent: browserWindow,
-//     minimizable: false,
-//     maximizable: false,
-//     resizable: false,
-//     webPreferences: { nodeIntegration: true }
-//   })
-
-//   modal.loadFile('./windows/modals/new-project/index.html')
-
-//   ipcMain.on('create-project', (event, args) => {
-//     console.log('ipcMain', args)
-//   })
-// }
