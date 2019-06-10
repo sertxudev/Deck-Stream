@@ -29,9 +29,13 @@ function openProject() {
   global.win.reload()
 }
 
-function openRecent(menuItem) {
+function openRecent(menuItem, window) {
   if (!fs.existsSync(menuItem.sublabel)) {
-    console.error('File not found')
+    dialog.showMessageBoxSync(window, {
+      type: 'error',
+      title: 'File not found',
+      message: 'The requested file doesn\'t exist'
+    })
     removeRecent(menuItem.sublabel)
     return false
   }
