@@ -62,7 +62,7 @@ $(document).ready(() => {
       })
 
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', this.$data))
-      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', {deck: this.decks[this.activeDeck], index: this.activeDeck}))
+      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', { deck: this.decks[this.activeDeck], index: this.activeDeck }))
       ipcRenderer.on('add-output', (event, id) => this.decks[this.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => this.decks[this.activeDeck].outputs = [])
       ipcRenderer.on('update-settings', (event, argv) => {
@@ -71,6 +71,7 @@ $(document).ready(() => {
       })
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
       ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({name: argv.name, path: argv.path, posterTime: 0}))
+      ipcRenderer.on('add-deck', (event, argv) => this.decks.splice(argv.position, 0, { name: argv.name, clips: [] }))
     }
   })
 

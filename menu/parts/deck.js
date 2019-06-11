@@ -1,8 +1,10 @@
+const deck = require('../../methods/deck')
+
 module.exports = () => {
   return {
     label: 'Deck',
     submenu: [
-      { id: 'new', label: 'New...' },
+      { id: 'new', label: 'New...', click: deck.addNew },
       { type: 'separator' },
       { id: 'insertBefore', label: 'Insert Before...' },
       { id: 'insertAfter', label: 'Insert After...' },
