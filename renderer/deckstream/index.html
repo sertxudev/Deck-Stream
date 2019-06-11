@@ -13,9 +13,19 @@
   <script src="../../libraries/bootstrap.min.js"></script>
   <!-- <script src="../../libraries/vue.min.js"></script> -->
   <script src="../../libraries/vue.dev.js"></script>
+  <script src="../../libraries/Sortable.min.js"></script>
+
   <script src="../../libraries/clock.js"></script>
   <script src="./script.js"></script>
-  <script src="http://localhost:8098"></script> 
+  <script src="http://localhost:8098"></script>
+  <script>
+    $(function () {
+      // $(".sortable").sortable({
+      //   placeholder: "ui-state-highlight"
+      // })
+      // $(".sortable").disableSelection()
+    })
+  </script>
 </head>
 
 <body class="h-100">
@@ -29,27 +39,31 @@
       </header>
 
 
-      <div class="row p-2" v-for="(group, gIndex) in decks[activeDeck].groups" :key="`group-${gIndex}`">
-
+      <div class="row p-2 group-row" v-for="(group, gIndex) in decks[activeDeck].groups" :key="`group-${gIndex}`">
         <div class="col-12 border-bottom mb-2 pb-1 px-1 text-white">{{ group.name }}</div>
 
-        <div class="card border-0 mr-1 mb-1" v-for="(clip, cIndex) in group.clips" :key="`clip-${gIndex}-${cIndex}`"
-          :id="`clip-${gIndex}-${cIndex}`">
+        <!-- <draggable class="sortable d-flex w-100" tag="div" v-model="group.clips" v-bind="dragOptions" @start="drag = true" @end="drag = false"> -->
+        <draggable class="sortable d-flex w-100" :list="group.clips" group="clips">
 
-          <template>
-            <video :src="clip.path + '#t=' + clip.posterTime" class="card-img-top" preload="metadata"
-              onerror="this.outerHTML=missingSource()" v-on:dblclick="setSteam(activeDeck, clip.path)"
-              v-on:click="setPreload(activeDeck, clip.path, $event)" v-if="fileIsVideo(clip.path)"></video>
+          <div class="card border-0 ui-state-default" v-for="(clip, cIndex) in group.clips"
+            :key="`clip-${gIndex}-${cIndex}`" :id="`clip-${gIndex}-${cIndex}`">
 
-            <img :src="clip.path" class="card-img-top" onerror="this.outerHTML=missingSource()"
-              v-on:dblclick="setSteam(activeDeck, clip.path)" v-on:click="setPreload(activeDeck, clip.path, $event)"
-              v-if="fileIsImage(clip.path)">
-          </template>
+            <template>
+              <video :src="clip.path + '#t=' + clip.posterTime" class="card-img-top" preload="metadata"
+                onerror="this.outerHTML=missingSource()" v-on:dblclick="setSteam(activeDeck, clip.path)"
+                v-on:click="setPreload(activeDeck, clip.path, $event)" v-if="fileIsVideo(clip.path)"></video>
 
-          <div class="align-items-center card-body d-flex justify-content-center p-0 text-white">
-            <small class="mx-1 overflow-hidden">{{clip.name}}</small>
+              <img :src="clip.path" class="card-img-top" onerror="this.outerHTML=missingSource()"
+                v-on:dblclick="setSteam(activeDeck, clip.path)" v-on:click="setPreload(activeDeck, clip.path, $event)"
+                v-if="fileIsImage(clip.path)">
+            </template>
+
+            <div class="align-items-center card-body d-flex justify-content-center p-0 text-white">
+              <small class="mx-1 overflow-hidden">{{clip.name}}</small>
+            </div>
           </div>
-        </div>
+
+        </draggable>
 
       </div>
     </main>
@@ -67,6 +81,7 @@
     </nav>
     <video src="" class="d-none" :id="`video-${index}`" v-for="(deck, index) in decks" :key="`video-${index}`"></video>
   </div>
+
 </body>
 
 </html>

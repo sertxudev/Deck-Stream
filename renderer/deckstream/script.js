@@ -1,4 +1,5 @@
 const { ipcRenderer, remote } = require('electron')
+const draggable = require('vuedraggable')
 
 $(document).ready(() => {
   let data = ipcRenderer.sendSync('load-data')
@@ -8,9 +9,11 @@ $(document).ready(() => {
   // Vue.config.devtools = true
   // Vue.config.debug = true;
 
+  Vue.component('draggable', draggable);
+
   var app = new Vue({
     el: '#deckstream',
-    data,
+    data: { ...data, drag: false },
     methods: {
       changeDeck: function (index) {
         console.log('Change Desk: ' + index)
@@ -70,18 +73,26 @@ $(document).ready(() => {
         this.description = argv.description
       })
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
-      ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({name: argv.name, path: argv.path, posterTime: 0}))
+      ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 }))
       ipcRenderer.on('add-deck', (event, argv) => this.decks.splice(argv.position, 0, { name: argv.name, clips: [] }))
     }
   })
 
-  document.addEventListener('contextmenu', (event) => {
-    event.preventDefault()
-    let clip = $(event.target).parent()[0]
-    console.log(clip)
-    // aContextMenu.popup(remote.getCurrentWindow())
-  })
+  // document.addEventListener('contextmenu', (event) => {
+  //   event.preventDefault()
+  //   // let clip = $(event.target).parent()[0]
+  //   // console.log(clip)
+  //   // aContextMenu.popup(remote.getCurrentWindow())
+  //   const { Menu, MenuItem } = remote
+  //   const menu = new Menu()
+  //   // menu.append(new MenuItem({ label: 'MenuItem1', click() { console.log('item 1 clicked') } }))
+  //   // menu.append(new MenuItem({ type: 'separator' }))
+  //   // menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
+  //   // const clips = require('../../methods/clips')
+  //   // menu.append(new MenuItem({ label: 'New Clip...', click: clips.addNew }))
 
+  //   // menu.popup({ window: remote.getCurrentWindow() })
+  // })
 
 })
 
