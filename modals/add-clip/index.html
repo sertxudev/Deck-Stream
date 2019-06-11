@@ -68,10 +68,8 @@
 
     ipcRenderer.on('get-groups', (event, data) => {
       let groups = ''
-      groups += '<option value="-1" disabled selected hidden>Group to be added</option>'
-      data.forEach((el, index) => {
-        groups += '<option value="' + index + '">' + el.name + '</option>'
-      })
+      // groups += '<option value="-1" disabled selected hidden>Group to be added</option>'
+      data.forEach((el, index) => groups += '<option value="' + index + '">' + el.name + '</option>')
       document.getElementById('group').innerHTML = groups
     })
 
