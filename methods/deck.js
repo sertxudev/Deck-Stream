@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron'
 
 function addNew(menuItem, window) {
   let modal = new BrowserWindow({
-    height: 360, width: 400, parent: window, minimizable: false,
+    height: 280, width: 400, parent: window, minimizable: false,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/add-deck/index.html')
@@ -12,12 +12,11 @@ function addNew(menuItem, window) {
     ipcMain.once('get-data', (event, data) => {
       let decks = []
       data.decks.forEach(el => decks.push({ name: el.name }))
-      console.log(decks)
       modal.webContents.send('get-decks', decks)
     })
     modal.show()
   })
-  // modal.setMenu(null)
+  modal.setMenu(null)
 
   modal.on('close', () => ipcMain.removeListener('add-deck', addDeck))
 
@@ -27,6 +26,7 @@ function addNew(menuItem, window) {
     modal.destroy()
 
     if (!argv.cancelled) {
+      global.win.focus()
       global.win.send('add-deck', { name: argv.name, position: argv.position })
       return true
     }

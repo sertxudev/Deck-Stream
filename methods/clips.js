@@ -11,7 +11,7 @@ function addNew(menuItem, window) {
 
     ipcMain.once('get-data', (event, data) => {
       let groups = []
-      data.decks[data.activeDeck].groups.forEach(el => groups.push({name: el.name}))
+      data.decks[data.activeDeck].groups.forEach(el => groups.push({ name: el.name }))
       modal.webContents.send('get-groups', groups)
     })
     modal.show()
@@ -26,6 +26,7 @@ function addNew(menuItem, window) {
     modal.destroy()
 
     if (!argv.cancelled) {
+      global.win.focus()
       global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group })
       return true
     }
@@ -33,6 +34,5 @@ function addNew(menuItem, window) {
     return false
   }
 }
-
 
 module.exports.addNew = addNew
