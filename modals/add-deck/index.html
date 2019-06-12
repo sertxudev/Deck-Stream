@@ -42,7 +42,7 @@
 
     ipcRenderer.on('get-decks', (event, data) => {
       let decks = ''
-      decks += '<option value="0" selected>At the top</option>'
+      decks += '<option value="0" selected>At first</option>'
       data.forEach((el, index) => decks += '<option value="' + (index + 1) + '">After ' + el.name + '</option>')
       document.getElementById('position').innerHTML = decks
     })
