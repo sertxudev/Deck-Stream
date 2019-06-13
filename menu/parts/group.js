@@ -1,11 +1,10 @@
+const group = require('../../methods/group')
+
 module.exports = () => {
   return {
     label: 'Group',
     submenu: [
-      { id: 'new', label: 'New...' },
-      { type: 'separator' },
-      { id: 'insertAbove', label: 'Insert Above...' },
-      { id: 'insertBelow', label: 'Insert Below...' },
+      { id: 'new', label: 'New...', click: group.addNew },
       { type: 'separator' },
       { id: 'duplicate', label: 'Duplicate' },
       { id: 'rename', label: 'Rename' },

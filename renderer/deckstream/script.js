@@ -74,7 +74,8 @@ $(document).ready(() => {
       })
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
       ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 }))
-      ipcRenderer.on('add-deck', (event, argv) => this.decks.splice(argv.position, 0, { name: argv.name, clips: [] }))
+      ipcRenderer.on('add-deck', (event, argv) => this.decks.splice(argv.position, 0, { name: argv.name, groups: [] }))
+      ipcRenderer.on('add-group', (event, argv) => this.decks[this.activeDeck].groups.splice(argv.position, 0, { name: argv.name, clips: [] }))
     }
   })
 
