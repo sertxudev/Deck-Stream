@@ -43,6 +43,9 @@ $(document).ready(() => {
       },
       fileIsImage: function (filename) {
         return filename.split('.').pop().match(/(jpg|jpeg|png|gif)$/i)
+      },
+      onDraggedDecks: function (event) {
+        this.activeDeck = event.newIndex
       }
     },
     mounted: function () {

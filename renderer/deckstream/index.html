@@ -38,41 +38,46 @@
         <div class="align-self-center col-4 text-center text-danger" id="remainingTime"></div>
       </header>
 
+      <draggable :list="decks[activeDeck].groups" group="groups">
 
-      <div class="row p-2 group-row" v-for="(group, gIndex) in decks[activeDeck].groups" :key="`group-${gIndex}`">
-        <div class="col-12 border-bottom mb-2 pb-1 px-1 text-white">{{ group.name }}</div>
+        <div class="row p-2 group-row" v-for="(group, gIndex) in decks[activeDeck].groups" :key="`group-${gIndex}`">
+          <div class="col-12 border-bottom mb-2 pb-1 px-1 text-white">{{ group.name }}</div>
 
-        <!-- <draggable class="sortable d-flex w-100" tag="div" v-model="group.clips" v-bind="dragOptions" @start="drag = true" @end="drag = false"> -->
-        <draggable class="sortable d-flex w-100" :list="group.clips" group="clips">
+          <draggable class="sortable d-flex w-100" :list="group.clips" group="clips">
 
-          <div class="card border-0 ui-state-default" v-for="(clip, cIndex) in group.clips"
-            :key="`clip-${gIndex}-${cIndex}`" :id="`clip-${gIndex}-${cIndex}`">
+            <div class="card border-0 ui-state-default" v-for="(clip, cIndex) in group.clips"
+              :key="`clip-${gIndex}-${cIndex}`" :id="`clip-${gIndex}-${cIndex}`">
 
-            <template>
-              <video :src="clip.path + '#t=' + clip.posterTime" class="card-img-top" preload="metadata"
-                onerror="this.outerHTML=missingSource()" v-on:dblclick="setSteam(activeDeck, clip.path)"
-                v-on:click="setPreload(activeDeck, clip.path, $event)" v-if="fileIsVideo(clip.path)"></video>
+              <template>
+                <video :src="clip.path + '#t=' + clip.posterTime" class="card-img-top" preload="metadata"
+                  onerror="this.outerHTML=missingSource()" v-on:dblclick="setSteam(activeDeck, clip.path)"
+                  v-on:click="setPreload(activeDeck, clip.path, $event)" v-if="fileIsVideo(clip.path)"></video>
 
-              <img :src="clip.path" class="card-img-top" onerror="this.outerHTML=missingSource()"
-                v-on:dblclick="setSteam(activeDeck, clip.path)" v-on:click="setPreload(activeDeck, clip.path, $event)"
-                v-if="fileIsImage(clip.path)">
-            </template>
+                <img :src="clip.path" class="card-img-top" onerror="this.outerHTML=missingSource()"
+                  v-on:dblclick="setSteam(activeDeck, clip.path)" v-on:click="setPreload(activeDeck, clip.path, $event)"
+                  v-if="fileIsImage(clip.path)">
+              </template>
 
-            <div class="align-items-center card-body d-flex justify-content-center p-0 text-white">
-              <small class="mx-1 overflow-hidden">{{clip.name}}</small>
+              <div class="align-items-center card-body d-flex justify-content-center p-0 text-white">
+                <small class="mx-1 overflow-hidden">{{clip.name}}</small>
+              </div>
             </div>
-          </div>
 
-        </draggable>
+          </draggable>
 
-      </div>
+        </div>
+
+      </draggable>
     </main>
     <nav>
       <ul class="nav nav-tabs">
-        <li class="nav-item" v-for="(deck, dIndex) in decks" :key="`deck-${dIndex}`">
-          <a :class="{active: dIndex == activeDeck}" class="nav-link" href="#"
-            v-on:click="changeDeck(dIndex)">{{deck.name}}</a>
-        </li>
+
+        <draggable class="d-flex" :list="decks" group="decks" @end="onDraggedDecks">
+          <li class="nav-item" v-for="(deck, dIndex) in decks" :key="`deck-${dIndex}`">
+            <a :class="{active: dIndex == activeDeck}" class="nav-link" href="#"
+              v-on:click="changeDeck(dIndex)">{{deck.name}}</a>
+          </li>
+        </draggable>
 
         <div>
           <button v-on:click="syncDeck()">Sync</button>
