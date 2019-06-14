@@ -1,0 +1,38 @@
+{
+  "comments": false,
+  "env": {
+    "main": {
+      "presets": [
+        ["env", {
+          "targets": { "node": 7 }
+        }],
+        "stage-0"
+      ]
+    },
+    "deckstream": {
+      "presets": [
+        ["env", {
+          "modules": false
+        }],
+        "stage-0"
+      ]
+    },
+    "livestream": {
+      "presets": [
+        ["env", {
+          "modules": false
+        }],
+        "stage-0"
+      ]
+    }
+  },
+  // "plugins": ["transform-runtime"]
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": false,
+    }],
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ]
+}

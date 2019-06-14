@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
+    "dev": "webpack --mode development && npm start",
+    "prod": "webpack --mode production && npm start",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -17,6 +19,12 @@
     "mac": {
       "category": "com.sertxudeveloper.deckstream"
     },
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**/*"
+    ],
     "fileAssociations": [
       {
         "ext": "dsf",
@@ -33,10 +41,27 @@
     "wallpaper": "^4.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/runtime": "^7.4.5",
     "@vue/devtools": "^5.1.0",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "bootstrap": "^4.3.1",
+    "css-loader": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^6.0.0-beta.4",
     "electron-builder": "^20.41.0",
-    "vue-devtools": "^5.0.0-beta.1"
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.7.0",
+    "style-loader": "^0.23.1",
+    "vue": "^2.6.10",
+    "vue-devtools": "^5.0.0-beta.1",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
   }
 }
