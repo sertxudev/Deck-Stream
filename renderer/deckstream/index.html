@@ -33,9 +33,9 @@
     <main class="">
       <header class="row bg-dark" :id="`header-${index}`" v-show="index == activeDeck" v-for="(deck, index) in decks"
         :key="`header-${index}`">
-        <div class="align-self-center col-4 text-center text-white" id="clock"></div>
-        <div class="align-self-center col-4 text-center text-success" id="currentTime"></div>
-        <div class="align-self-center col-4 text-center text-danger" id="remainingTime"></div>
+        <div class="align-self-center col-4 text-center text-white" :id="`clock-${index}`"></div>
+        <div class="align-self-center col-4 text-center text-success" :id="`currentTime-${index}`"></div>
+        <div class="align-self-center col-4 text-center text-danger" :id="`remainingTime-${index}`"></div>
       </header>
 
       <draggable :list="decks[activeDeck].groups" group="groups">
@@ -46,7 +46,7 @@
           <draggable class="sortable d-flex w-100" :list="group.clips" group="clips">
 
             <div class="card border-0 ui-state-default" v-for="(clip, cIndex) in group.clips"
-              :key="`clip-${gIndex}-${cIndex}`" :id="`clip-${gIndex}-${cIndex}`">
+              :key="`clip-${gIndex}-${cIndex}`" :id="`clip-${gIndex}-${cIndex}`" @contextmenu="openContextClip($event)">
 
               <template>
                 <video :src="clip.path + '#t=' + clip.posterTime" class="card-img-top" preload="metadata"

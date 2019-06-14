@@ -1,5 +1,6 @@
 const { ipcRenderer, remote } = require('electron')
 const draggable = require('vuedraggable')
+const { Menu, MenuItem } = remote
 
 $(document).ready(() => {
   let data = ipcRenderer.sendSync('load-data')
@@ -13,10 +14,9 @@ $(document).ready(() => {
 
   var app = new Vue({
     el: '#deckstream',
-    data: { ...data, drag: false },
+    data: data,
     methods: {
-      changeDeck: function (index) {
-        console.log('Change Desk: ' + index)
+      changeDeck: function(index) {
         this.activeDeck = index
       },
       setSteam: function (deck, url) {
@@ -46,38 +46,42 @@ $(document).ready(() => {
       },
       onDraggedDecks: function (event) {
         this.activeDeck = event.newIndex
+      },
+      openContextClip: function (event) {
+        let element = $(event.target).parent()[0]
+        if (!element.id) element = $(element).parent()[0]
+
+        const menu = new Menu()
+        const methods = require('../../context-menu/clips')
+        // menu.append(new MenuItem({ label: 'Settings', click: () => methods.openSettings(element) }))
+        menu.append(new MenuItem({ label: 'Settings', click: () => ipcRenderer.send('clips-settings', event) }))
+        // menu.append(new MenuItem({ label: 'Settings', click: () => { console.log('Settings - Group ' + element.id.split('-')[1] + ' - Clip ' + element.id.split('-')[2]) } }))
+        // menu.append(new MenuItem({ label: 'Remove', click: () => { console.log('Remove - Group ' + element.id.split('-')[1] + ' - Clip ' + element.id.split('-')[2]) } }))
+
+        menu.popup({ window: remote.getCurrentWindow() })
       }
     },
     mounted: function () {
-      this.decks.forEach((deck, index) => {
-        launchClock(index)
-
-        $(`#video-${index}`)[0].ontimeupdate = () => {
-          var currentTime = $(`#video-${index}`)[0].currentTime
-          if (currentTime) {
-            $(`#header-${index} > #currentTime`)[0].innerText = toHHMMSS(currentTime)
-
-            var remainingTime = $(`#video-${index}`)[0].duration - $(`#video-${index}`)[0].currentTime
-            if (remainingTime < 40) $(`#header-${index} > #remainingTime`)[0].classList.add('flash-time')
-            if (remainingTime < 20) $(`#header-${index}`)[0].classList.add('flash-danger')
-            $(`#header-${index} > #remainingTime`)[0].innerText = '-' + toHHMMSS(remainingTime)
-          }
-        }
-
-        $(`#video-${index}`)[0].onended = () => clearTimes(index)
-      })
+      this.decks.forEach((deck, index) => prepareHeader(index))
 
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', this.$data))
+      ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
       ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', { deck: this.decks[this.activeDeck], index: this.activeDeck }))
+
       ipcRenderer.on('add-output', (event, id) => this.decks[this.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => this.decks[this.activeDeck].outputs = [])
+
       ipcRenderer.on('update-settings', (event, argv) => {
         this.name = argv.name
         this.description = argv.description
       })
-      ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', this.name))
+
       ipcRenderer.on('add-clip', (event, argv) => this.decks[this.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 }))
-      ipcRenderer.on('add-deck', (event, argv) => this.decks.splice(argv.position, 0, { name: argv.name, groups: [] }))
+      ipcRenderer.on('add-deck', (event, argv) => {
+        this.decks.forEach((deck, index) => clearClock(index))
+        this.decks.splice(argv.position, 0, { name: argv.name, groups: [] })
+        this.decks.forEach((deck, index) => prepareHeader(index))
+      })
       ipcRenderer.on('add-group', (event, argv) => this.decks[this.activeDeck].groups.splice(argv.position, 0, { name: argv.name, clips: [] }))
     }
   })
@@ -98,13 +102,31 @@ $(document).ready(() => {
   //   // menu.popup({ window: remote.getCurrentWindow() })
   // })
 
-})
+// })
+
+function prepareHeader(index) {
+  launchClock(index)
+
+  $(`#video-${index}`)[0].ontimeupdate = () => {
+    var currentTime = $(`#video-${index}`)[0].currentTime
+    if (currentTime) {
+      $(`#header-${index} > #currentTime-${index}`)[0].innerText = toHHMMSS(currentTime)
+
+      var remainingTime = $(`#video-${index}`)[0].duration - $(`#video-${index}`)[0].currentTime
+      if (remainingTime < 40) $(`#header-${index} > #remainingTime-${index}`)[0].classList.add('flash-time')
+      if (remainingTime < 20) $(`#header-${index}`)[0].classList.add('flash-danger')
+      $(`#header-${index} > #remainingTime-${index}`)[0].innerText = '-' + toHHMMSS(remainingTime)
+    }
+  }
+
+  $(`#video-${index}`)[0].onended = () => clearTimes(index)
+}
 
 function clearTimes(index) {
-  $(`#header-${index} > #remainingTime`)[0].classList.remove('flash-time')
+  $(`#header-${index} > #remainingTime-${index}`)[0].classList.remove('flash-time')
   $(`#header-${index}`)[0].classList.remove('flash-danger')
-  $(`#header-${index} > #currentTime`)[0].innerText = ''
-  $(`#header-${index} > #remainingTime`)[0].innerText = ''
+  $(`#header-${index} > #currentTime-${index}`)[0].innerText = ''
+  $(`#header-${index} > #remainingTime-${index}`)[0].innerText = ''
 }
 
 function missingSource() {
