@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron'
 
 function addNew(menuItem, window) {
   let modal = new BrowserWindow({
-    height: 280, width: 400, parent: window, minimizable: false,
+    height: 280, width: 400, parent: window, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/add-deck/index.html')
