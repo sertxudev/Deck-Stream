@@ -8,7 +8,7 @@ function getBlank() {
   return {
     "name": "undefined", "description": null, "decks": [{
       "name": "Deck 1", "outputs": [], "groups": [{
-        "name": "Group 1", "clips": [{ "path": "../../assets/black.jpg", "name": "Blackout" }]
+        "name": "Group 1", "clips": [{ "path": "../assets/black.jpg", "name": "Blackout" }]
       }]
     }],
     "activeDeck": 0,
