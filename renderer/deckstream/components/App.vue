@@ -1,16 +1,21 @@
 <template>
-  <div>
-    <h1>Deck Stream</h1>
-    <span>{{message}}</span>
+  <div class="container-fluid h-100" id="deckstream" v-cloak>
+    <main>
+      <Header/>
+      <Groups/>
+    </main>
+    <Decks/>
+    <Players/>
   </div>
 </template>
 
 <script>
+import Header from "./Header";
+import Groups from "./Groups";
+import Decks from "./Decks";
+import Players from "./Players";
+
 export default {
-  data() {
-    return {
-      message: "Hello World"
-    };
-  }
+  components: { Header, Groups, Decks, Players }
 };
 </script>

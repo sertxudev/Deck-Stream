@@ -1,0 +1,26 @@
+<template>
+  <draggable class="sortable d-flex w-100" :list="getActiveDeckClips" group="clips">
+    <Clip
+      :clip="clip"
+      :cIndex="cIndex"
+      v-for="(clip, cIndex) in getActiveDeckClips"
+      :key="`clip-${gIndex}-${cIndex}`"
+    />
+  </draggable>
+</template>
+
+<script>
+import draggable from "vuedraggable";
+import Clip from "./Clip";
+
+export default {
+  components: { draggable, Clip },
+  props: ["gIndex"],
+  computed: {
+    getActiveDeckClips() {
+      const data = this.$store.state.data;
+      return data.decks[data.activeDeck].groups[this.gIndex].clips;
+    }
+  }
+};
+</script>
