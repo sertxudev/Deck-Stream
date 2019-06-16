@@ -24,7 +24,7 @@ function createWindow() {
   global.win.on('close', function (e) {
     var choice = electron.dialog.showMessageBoxSync(this, {
       type: 'question',
-      buttons: ['Yes','No'],
+      buttons: ['Yes', 'No'],
       defaultId: 1,
       noLink: true,
       title: 'Confirm',
@@ -45,12 +45,18 @@ function createWindow() {
 
   ipcMain.on('enable-stream', (event, arg) => {
     if (!global.winout.length || !global.winout[arg.deck].length) return false
-    global.winout[arg.deck].forEach((output) => output.webContents.send('enable-stream', arg.url))
+    global.winout[arg.deck].forEach((output) => {
+      if (!output) return null
+      output.webContents.send('enable-stream', arg.url)
+    })
   })
 
   ipcMain.on('set-preload', (event, arg) => {
     if (!global.winout.length || !global.winout[arg.deck].length) return false
-    global.winout[arg.deck].forEach((output) => output.webContents.send('set-preload', arg.url))
+    global.winout[arg.deck].forEach((output) => {
+      if (!output) return null
+      output.webContents.send('set-preload', arg.url)
+    })
   })
 
   methods.menu.buildMenu()

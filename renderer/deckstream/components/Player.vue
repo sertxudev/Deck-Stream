@@ -1,19 +1,28 @@
 <template>
-  <audio :src="player.src" controls @timeupdate="onTimeUpdate"></audio>
+  <!-- <audio :src="player.src" controls @timeupdate="onTimeUpdate"></audio> -->
+  <video :src="player.src" controls @timeupdate="onTimeUpdate" @play="onPlay"></video>
 </template>
 
 <script>
+import { ipcRenderer } from "electron";
+
 export default {
   props: ["player", "index"],
   methods: {
-    clearTimes: function() {
+    clearTimes: function () {
       this.player.currentTime = null;
       this.player.remainingTime = null;
     },
-    onTimeUpdate: function() {
-      this.player.currentTime = this.$el.currentTime;
-      this.player.remainingTime = this.$el.duration - this.$el.currentTime;
-    }
+    onTimeUpdate: function () {
+      this.$store.commit("updateCurrentTime", {
+        index: this.index,
+        currentTime: this.$el.currentTime
+      });
+      this.$store.commit("updateRemainingTime", {
+        index: this.index,
+        remainingTime: this.$el.duration - this.$el.currentTime
+      });
+    },
   },
   updated() {
     this.clearTimes();

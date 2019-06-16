@@ -5,7 +5,7 @@
         :src="clip.path + '#t=' + clip.posterTime"
         class="card-img-top"
         preload="metadata"
-        v-on:error="sourceError($event)"
+        v-on:error="/*sourceError($event)*/"
         v-on:dblclick="setStream(getActiveDeck, clip.path)"
         v-on:click="setPreload(getActiveDeck, clip.path, $event)"
         v-if="fileIsVideo(clip.path)"
@@ -39,38 +39,39 @@ export default {
     }
   },
   methods: {
-    sourceError: function(event) {
+    sourceError: function (event) {
       event.target.outerHTML = `
         <div style="height:65px;background: #262626;" class="align-items-center d-flex justify-content-center rounded-top">
           <small class="border border-danger rounded" style="padding: 1px 4px;color: #b3b3b3;">Replace</small>
         </div>`;
     },
-    setStream: function(deck, url) {
-      url = url.split("#").shift();
-      ipcRenderer.send("enable-stream", { deck, url });
-      // this.$store.state.players[deck].src = url
+    setStream: function (deck, url) {
+      url = url.split("#t=").shift();
       this.$store.commit("changeSource", { index: deck, src: url });
+      // ipcRenderer.send("enable-stream", { deck, url });
+      // this.$store.state.players[deck].src = url
       // this.$root.$refs[`video-${deck}`].src = url;
       // this.$root.$refs[`video-${deck}`].play();
       // clearTimes();
     },
-    setPreload: function(deck, url) {
-      url = url.split("#").shift();
-      ipcRenderer.send("set-preload", { deck, url });
+    setPreload: function (deck, url) {
+      url = url.split("#t=").shift();
+      this.$store.commit("changePreviewSource", { index: deck, src: url });
+      // ipcRenderer.send("set-preload", { deck, url });
     },
-    fileIsVideo: function(filename) {
+    fileIsVideo: function (filename) {
       return filename
         .split(".")
         .pop()
         .match(/(webm|ogg|mp4)$/i);
     },
-    fileIsImage: function(filename) {
+    fileIsImage: function (filename) {
       return filename
         .split(".")
         .pop()
         .match(/(jpg|jpeg|png|gif)$/i);
     },
-    openContextClip: function(event) {
+    openContextClip: function (event) {
       // console.log('openContextClip', event)
       let element = event.target.parentNode;
       if (!element.classList.contains("card")) element = element.parentNode;

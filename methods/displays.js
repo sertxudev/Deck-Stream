@@ -47,14 +47,14 @@ function createOutput(menuItem) {
   global.win.send('get-activeDeck')
   ipcMain.once('get-activeDeck', (event, argv) => {
     let window = new BrowserWindow({
-      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
+      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true, closable: false,
       title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
     })
 
-    window.loadFile('./renderer/livestream/index.html')
+    window.loadFile('./dist/livestream.html')
     electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
     if (menuItem.accelerator) window.setFullScreen(true)
-    window.setMenu(null)
+    // window.setMenu(null)
 
     if (!global.winout[argv.index]) global.winout[argv.index] = []
     global.winout[argv.index].push(window)
@@ -65,7 +65,10 @@ function createOutput(menuItem) {
 function disableOutputs() {
   global.win.send('get-activeDeck')
   ipcMain.once('get-activeDeck', (event, argv) => {
-    argv.deck.outputs.forEach(id => BrowserWindow.fromId(id).destroy())
+    argv.deck.outputs.forEach(id => {
+      let window = BrowserWindow.fromId(id)
+      if(window) window.destroy()
+    })
     global.win.send('disable-outputs')
   })
 }

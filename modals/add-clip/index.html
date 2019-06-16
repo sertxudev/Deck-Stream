@@ -62,6 +62,11 @@
 
       if (file !== undefined) {
         filePath = file[0]
+          .replace('#', '%23')
+          .replace('(', '%28')
+          .replace(')', '%29')
+          .replace('+', '%2B')
+          .replace('@', '%40')
         document.getElementById('file').innerText = filePath.split('\\').pop()
       }
     })

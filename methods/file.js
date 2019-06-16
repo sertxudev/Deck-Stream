@@ -36,15 +36,15 @@ function processConfig(data) {
         }
 
         let window = new BrowserWindow({
-          x: output.x, y: output.y, width: output.width, height: output.height, alwaysOnTop: true,
+          x: output.x, y: output.y, width: output.width, height: output.height, alwaysOnTop: true, closable: false,
           title: deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
         })
 
-        window.loadFile('./renderer/livestream/index.html')
+        window.loadFile('./dist/livestream.html')
         electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
         if (output.fullscreened) window.setFullScreen(true)
         if (output.maximized) window.maximize()
-        window.setMenu(null)
+        // window.setMenu(null)
         outputs.push(window)
 
         outputsIDs.push(window.id)

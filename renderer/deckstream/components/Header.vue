@@ -3,7 +3,7 @@
     <Clock/>
     <template v-show="activeDeck == index" v-for="(deck, index) in decks">
       <CurrentTime :key="`currentTime-${index}`" :index="index"/>
-      <!-- <RemainingTime :key="`remainingTime-${index}`" :index="index"/> -->
+      <RemainingTime :key="`remainingTime-${index}`" :index="index"/>
     </template>
   </div>
 </template>

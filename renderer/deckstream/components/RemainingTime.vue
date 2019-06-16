@@ -7,7 +7,7 @@ export default {
   props: ["index"],
   computed: {
     getRemainingTime() {
-      const data = this.$store.state.player[this.index];
+      const data = this.$store.state.players[this.index];
       if (!data) return null
 
       if (data.remainingTime < 40) data.flashTime = true;

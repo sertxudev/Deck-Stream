@@ -3,6 +3,7 @@ const { Menu, MenuItem } = remote
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+import sharedMutations from 'vuex-shared-mutations';
 
 import App from './components/App.vue'
 
@@ -26,10 +27,20 @@ const store = new Vuex.Store({
     data: {}
   },
   mutations: {
-    changeSource (state, payload) {
+    changeSource(state, payload) {
       state.players[payload.index].src = payload.src
+    },
+    changePreviewSource(state, payload) {
+      state.players[payload.index].previewSrc = payload.src
+    },
+    updateCurrentTime(state, payload) {
+      state.players[payload.index].currentTime = payload.currentTime
+    },
+    updateRemainingTime(state, payload) {
+      state.players[payload.index].remainingTime = payload.remainingTime
     }
-  }
+  },
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime'] })]
 })
 
 new Vue({
@@ -62,7 +73,9 @@ new Vue({
         data.description = argv.description
       })
 
-      ipcRenderer.on('add-clip', (event, argv) => data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 }))
+      ipcRenderer.on('add-clip', (event, argv) => {
+        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 })
+      })
       ipcRenderer.on('add-deck', (event, argv) => {
         data.decks.forEach((deck, index) => clearClock(index))
         data.decks.splice(argv.position, 0, { name: argv.name, groups: [] })

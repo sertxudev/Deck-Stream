@@ -1,5 +1,17 @@
 const { ipcRenderer } = require('electron')
 
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './style.css'
+
+import $ from 'jquery'
+// import Popper from 'popper.js'
+// import 'bootstrap'
+// import draggable from 'vuedraggable'
+
+window.$ = $
+// $(() => $('[data-toggle="tooltip"]').tooltip())
+// Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform))
+
 let video_actual = 'videoA'
 let video_other = 'videoB'
 let fadeDuration = 500
