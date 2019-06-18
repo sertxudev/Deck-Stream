@@ -1,6 +1,6 @@
 <template>
-  <!-- <audio :src="player.src" controls @timeupdate="onTimeUpdate"></audio> -->
-  <video :src="player.src" controls @timeupdate="onTimeUpdate" @play="onPlay"></video>
+  <audio :src="player.src" controls @timeupdate="onTimeUpdate"></audio>
+  <!-- <video :src="player.src" controls @timeupdate="onTimeUpdate"></video> -->
 </template>
 
 <script>

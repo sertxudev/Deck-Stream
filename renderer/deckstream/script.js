@@ -28,6 +28,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     changeSource(state, payload) {
+      state.players[payload.index].src = ''
       state.players[payload.index].src = payload.src
     },
     changePreviewSource(state, payload) {
@@ -40,7 +41,7 @@ const store = new Vuex.Store({
       state.players[payload.index].remainingTime = payload.remainingTime
     }
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'updateCurrentTime'] })]
 })
 
 new Vue({
