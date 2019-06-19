@@ -47,27 +47,45 @@ function createOutput(menuItem) {
   global.win.send('get-activeDeck')
   ipcMain.once('get-activeDeck', (event, argv) => {
     let window = new BrowserWindow({
-      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true, closable: false,
-      title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
+      title: argv.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
     })
 
-    window.loadFile('./dist/livestream.html')
+    window.loadFile('./dist/livestream.html', { query: { id: argv.id } })
     electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
     if (menuItem.accelerator) window.setFullScreen(true)
     // window.setMenu(null)
 
-    if (!global.winout[argv.index]) global.winout[argv.index] = []
-    global.winout[argv.index].push(window)
+    if (!global.winout[argv.id]) global.winout[argv.id] = []
+    global.winout[argv.id].push(window)
     global.win.send('add-output', window.id)
   })
+}
+
+function createPreviewMonitorOutput(menuItem) {
+  let display = getDisplays()[0]
+
+  let window = new BrowserWindow({
+    x: display.x, y: display.y, width: 1280, height: 720,
+    backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+  })
+
+  window.loadFile('./dist/previewmonitor.html')
+  electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
+  if (menuItem.accelerator) window.setFullScreen(true)
+  // window.setMenu(null)
+
+  // if (!global.winout[argv.id]) global.winout[argv.id] = []
+  // global.winout[argv.id].push(window)
+  // global.win.send('add-output', window.id)
 }
 
 function disableOutputs() {
   global.win.send('get-activeDeck')
   ipcMain.once('get-activeDeck', (event, argv) => {
-    argv.deck.outputs.forEach(id => {
+    argv.outputs.forEach(id => {
       let window = BrowserWindow.fromId(id)
-      if(window) window.destroy()
+      if (window) window.destroy()
     })
     global.win.send('disable-outputs')
   })
@@ -97,5 +115,6 @@ function checkOffscreenPoints(window, screen) {
 module.exports.getFullscreenDisplays = getFullscreenDisplays
 module.exports.getWindowedDisplays = getWindowedDisplays
 module.exports.getDisplays = getDisplays
+module.exports.createPreviewMonitorOutput = createPreviewMonitorOutput
 module.exports.disableOutputs = disableOutputs
 module.exports.checkOffscreenPoints = checkOffscreenPoints

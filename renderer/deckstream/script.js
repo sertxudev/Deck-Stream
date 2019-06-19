@@ -28,20 +28,27 @@ const store = new Vuex.Store({
   },
   mutations: {
     changeSource(state, payload) {
-      state.players[payload.index].src = ''
-      state.players[payload.index].src = payload.src
+      let index = state.players.findIndex((player) => player.id === payload.id)
+      state.players[index].src = ''
+      state.players[index].src = payload.src
     },
     changePreviewSource(state, payload) {
-      state.players[payload.index].previewSrc = payload.src
+      let index = state.players.findIndex((player) => player.id === payload.id)
+      state.players[index].previewSrc = payload.src
     },
     updateCurrentTime(state, payload) {
-      state.players[payload.index].currentTime = payload.currentTime
+      let index = state.players.findIndex((player) => player.id === payload.id)
+      state.players[index].currentTime = payload.currentTime
     },
     updateRemainingTime(state, payload) {
-      state.players[payload.index].remainingTime = payload.remainingTime
+      let index = state.players.findIndex((player) => player.id === payload.id)
+      state.players[index].remainingTime = payload.remainingTime
+    },
+    addPlayer(state, payload) {
+      state.players.push({ id: payload.id, src: "", previewSrc: "", currentTime: null, remainingTime: null })
     }
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'updateCurrentTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime'] })]
 })
 
 new Vue({
@@ -55,16 +62,14 @@ new Vue({
     },
     buildPlayers: function () {
       const decks = this.$store.state.data.decks
-      decks.forEach((deck, index) => {
-        this.$store.state.players.splice(index, 0, { src: "", currentTime: null, remainingTime: null })
-      })
+      decks.forEach((deck, index) => this.$store.commit('addPlayer', { id: deck.id }))
     },
     enableEvents: function () {
       const data = this.$store.state.data
 
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', data))
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', data.name))
-      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', { deck: data.decks[data.activeDeck], index: data.activeDeck }))
+      ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', data.decks[data.activeDeck]))
 
       ipcRenderer.on('add-output', (event, id) => data.decks[data.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => data.decks[data.activeDeck].outputs = [])
@@ -77,11 +82,13 @@ new Vue({
       ipcRenderer.on('add-clip', (event, argv) => {
         data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0 })
       })
+
       ipcRenderer.on('add-deck', (event, argv) => {
-        data.decks.forEach((deck, index) => clearClock(index))
-        data.decks.splice(argv.position, 0, { name: argv.name, groups: [] })
-        data.decks.forEach((deck, index) => prepareHeader(index))
+        let generatedID = Math.random().toString(36).substr(2, 9)
+        data.decks.splice(argv.position, 0, { id: generatedID, name: argv.name, groups: [], outputs: [] })
+        this.$store.commit('addPlayer', { id: generatedID })
       })
+
       ipcRenderer.on('add-group', (event, argv) => data.decks[data.activeDeck].groups.splice(argv.position, 0, { name: argv.name, clips: [] }))
     }
   },

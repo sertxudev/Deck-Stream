@@ -1,5 +1,5 @@
 <template>
-  <draggable class="sortable d-flex w-100" :list="getActiveDeckClips" group="clips">
+  <draggable class="sortable flex-wrap d-flex w-100" :list="getActiveDeckClips" group="clips">
     <Clip
       :clip="clip"
       :cIndex="cIndex"

@@ -7,7 +7,7 @@ const menu = require('./menu')
 function getBlank() {
   return {
     "name": "undefined", "description": null, "decks": [{
-      "name": "Deck 1", "outputs": [], "groups": [{
+      "id": "py4q7bzrb","name": "Deck 1", "outputs": [], "groups": [{
         "name": "Group 1", "clips": [{ "path": "../assets/black.jpg", "name": "Blackout" }]
       }]
     }],
@@ -116,11 +116,13 @@ function processDataSave(data) {
   data.decks.forEach(deck => {
     let outputs = []
 
-    deck.outputs.forEach(id => {
-      let window = BrowserWindow.fromId(id)
-      let output = { ...window.getBounds(), maximized: window.isMaximized(), fullscreened: window.isFullScreen() }
-      outputs.push(output)
-    })
+    // if(deck.outputs.length) {
+      deck.outputs.forEach(id => {
+        let window = BrowserWindow.fromId(id)
+        let output = { ...window.getBounds(), maximized: window.isMaximized(), fullscreened: window.isFullScreen() }
+        outputs.push(output)
+      })
+    // }
 
     deck.outputs = outputs
   })

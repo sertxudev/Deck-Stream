@@ -43,19 +43,28 @@ function createWindow() {
     event.returnValue = data
   })
 
-  ipcMain.on('enable-stream', (event, arg) => {
-    if (!global.winout.length || !global.winout[arg.deck].length) return false
-    global.winout[arg.deck].forEach((output) => {
-      if (!output) return null
-      output.webContents.send('enable-stream', arg.url)
-    })
-  })
+  // ipcMain.on('enable-stream', (event, arg) => {
+  //   if (!global.winout.length || !global.winout[arg.deck].length) return false
+  //   global.winout[arg.deck].forEach((output) => {
+  //     if (!output) return null
+  //     output.webContents.send('enable-stream', arg.url)
+  //   })
+  // })
 
-  ipcMain.on('set-preload', (event, arg) => {
-    if (!global.winout.length || !global.winout[arg.deck].length) return false
-    global.winout[arg.deck].forEach((output) => {
-      if (!output) return null
-      output.webContents.send('set-preload', arg.url)
+  // ipcMain.on('set-preload', (event, arg) => {
+  //   if (!global.winout.length || !global.winout[arg.deck].length) return false
+  //   global.winout[arg.deck].forEach((output) => {
+  //     if (!output) return null
+  //     output.webContents.send('set-preload', arg.url)
+  //   })
+  // })
+
+  ipcMain.on('getDecksIds', (event) => {
+    global.win.webContents.send('get-data')
+    ipcMain.once('get-data', (ev, data) => {
+      let ids = []
+      data.decks.forEach(deck => ids.push(deck.id))
+      event.returnValue = ids
     })
   })
 

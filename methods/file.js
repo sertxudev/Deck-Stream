@@ -19,14 +19,14 @@ function loadFile(url) {
   return processConfig(data)
 }
 
-function processConfig(data) {  
+function processConfig(data) {
   if (!!Object.keys(data).length) {
     let decks = []
 
-    data.decks.forEach((deck, index) => {
+    data.decks.forEach((deck) => {
       let outputs = []
       let outputsIDs = []
-      
+
       deck.outputs.forEach((output) => {
         let screen = electron.screen.getDisplayNearestPoint({ x: output.x, y: output.y })
 
@@ -36,11 +36,11 @@ function processConfig(data) {
         }
 
         let window = new BrowserWindow({
-          x: output.x, y: output.y, width: output.width, height: output.height, alwaysOnTop: true, closable: false,
+          x: output.x, y: output.y, width: output.width, height: output.height, alwaysOnTop: true,
           title: deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
         })
 
-        window.loadFile('./dist/livestream.html')
+        window.loadFile('./dist/livestream.html', { query: { id: deck.id } })
         electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
         if (output.fullscreened) window.setFullScreen(true)
         if (output.maximized) window.maximize()
@@ -52,7 +52,7 @@ function processConfig(data) {
 
       deck.outputs = outputsIDs
       decks.push(deck)
-      global.winout[index] = outputs
+      global.winout[deck.id] = outputs
     })
 
     data.decks = decks
@@ -62,7 +62,7 @@ function processConfig(data) {
 }
 
 function saveFile(url, data) {
-  if(!url || url == '.') return project.saveAs()
+  if (!url || url == '.') return project.saveAs()
   project.addRecent(data.name, url)
   fs.writeFileSync(url, JSON.stringify(data), 'utf-8')
 }

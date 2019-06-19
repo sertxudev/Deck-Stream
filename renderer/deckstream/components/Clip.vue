@@ -6,8 +6,8 @@
         class="card-img-top"
         preload="metadata"
         v-on:error="/*sourceError($event)*/"
-        v-on:dblclick="setStream(getActiveDeck, clip.path)"
-        v-on:click="setPreload(getActiveDeck, clip.path, $event)"
+        v-on:dblclick="setStream(getActiveDeckId, clip.path)"
+        v-on:click="setPreload(getActiveDeckId, clip.path, $event)"
         v-if="fileIsVideo(clip.path)"
       ></video>
 
@@ -15,8 +15,8 @@
         :src="clip.path"
         class="card-img-top"
         v-on:error="sourceError($event)"
-        v-on:dblclick="setStream(getActiveDeck, clip.path)"
-        v-on:click="setPreload(getActiveDeck, clip.path, $event)"
+        v-on:dblclick="setStream(getActiveDeckId, clip.path)"
+        v-on:click="setPreload(getActiveDeckId, clip.path, $event)"
         v-if="fileIsImage(clip.path)"
       >
     </template>
@@ -34,8 +34,9 @@ const { Menu, MenuItem } = remote;
 export default {
   props: ["clip", "cIndex", "gIndex"],
   computed: {
-    getActiveDeck() {
-      return this.$store.state.data.activeDeck;
+    getActiveDeckId() {
+      let data = this.$store.state.data
+      return data.decks[data.activeDeck].id;
     }
   },
   methods: {
@@ -43,38 +44,32 @@ export default {
       event.target.outerHTML = `
         <div style="height:65px;background: #262626;" class="align-items-center d-flex justify-content-center rounded-top">
           <small class="border border-danger rounded" style="padding: 1px 4px;color: #b3b3b3;">Replace</small>
-        </div>`;
+        </div>`
     },
-    setStream: function (deck, url) {
+    setStream: function (id, url) {
       url = url.split("#t=").shift();
-      this.$store.commit("changeSource", { index: deck, src: url });
+      this.$store.commit("changeSource", { id, src: url })
       // ipcRenderer.send("enable-stream", { deck, url });
       // this.$store.state.players[deck].src = url
       // this.$root.$refs[`video-${deck}`].src = url;
       // this.$root.$refs[`video-${deck}`].play();
       // clearTimes();
     },
-    setPreload: function (deck, url) {
+    setPreload: function (id, url) {
       url = url.split("#t=").shift();
-      this.$store.commit("changePreviewSource", { index: deck, src: url });
+      this.$store.commit("changePreviewSource", { id, src: url })
       // ipcRenderer.send("set-preload", { deck, url });
     },
     fileIsVideo: function (filename) {
-      return filename
-        .split(".")
-        .pop()
-        .match(/(webm|ogg|mp4)$/i);
+      return filename.split(".").pop().match(/(webm|ogg|mp4)$/i);
     },
     fileIsImage: function (filename) {
-      return filename
-        .split(".")
-        .pop()
-        .match(/(jpg|jpeg|png|gif)$/i);
+      return filename.split(".").pop().match(/(jpg|jpeg|png|gif)$/i);
     },
     openContextClip: function (event) {
       // console.log('openContextClip', event)
       let element = event.target.parentNode;
-      if (!element.classList.contains("card")) element = element.parentNode;
+      if (!element.classList.contains("card")) element = element.parentNode
 
       const menu = new Menu();
       // const methods = require("../../context-menu/clips");

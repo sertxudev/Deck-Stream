@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron')
 import Vue from 'vue'
 import Vuex from 'vuex'
-import sharedMutations from 'vuex-shared-mutations';
+import sharedMutations from 'vuex-shared-mutations'
 
 import App from './components/App.vue'
 
@@ -13,6 +13,9 @@ window.$ = $
 
 Vue.use(Vuex)
 
+const urlParams = new URLSearchParams(window.location.search)
+const deckID = urlParams.get('id')
+
 const store = new Vuex.Store({
   state: {
     player: { src: "", currentTime: null, id: 'videoA' },
@@ -21,6 +24,8 @@ const store = new Vuex.Store({
   },
   mutations: {
     changeSource(state, payload) {
+      if(deckID !== payload.id) return null
+
       state.player.id = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
       let video_other = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
 
@@ -75,6 +80,7 @@ const store = new Vuex.Store({
       }, state.fadeDuration / 2)
     },
     updateCurrentTime(state, payload) {
+      if(deckID !== payload.id) return null
       state.player.currentTime = payload.currentTime
     }
   },
@@ -84,7 +90,7 @@ const store = new Vuex.Store({
 new Vue({
   components: { App },
   store,
-  template: '<App ref="app"></App>',
+  template: '<App ref="app"></App>'
 }).$mount('#app')
 
 

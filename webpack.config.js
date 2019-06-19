@@ -9,6 +9,7 @@ module.exports = {
     main: './index.js',
     deckstream: './renderer/deckstream/script.js',
     livestream: './renderer/livestream/script.js',
+    previewmonitor: './renderer/previewmonitor/script.js',
   },
   output: {
     filename: '[name].js',
@@ -70,6 +71,18 @@ module.exports = {
       chunks: ['livestream'],
       template: "./renderer/livestream/index.html",
       filename: __dirname + "/dist/livestream.html",
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true
+      },
+      nodeModules: false
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['previewmonitor'],
+      template: "./renderer/previewmonitor/index.html",
+      filename: __dirname + "/dist/previewmonitor.html",
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,

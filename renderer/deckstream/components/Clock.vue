@@ -20,7 +20,6 @@ export default {
       var s = this.leadingZero(today.getSeconds());
       this.time = h + ":" + m + ":" + s;
       setTimeout(() => this.updateClock(), 500);
-      // console.log(this.$store.state)
     },
     leadingZero: function(i) {
       if (i < 10) i = "0" + i;

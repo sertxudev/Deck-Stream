@@ -1,11 +1,6 @@
 <template>
   <div>
-    <Player
-      :player="player"
-      :index="index"
-      v-for="(player, index) in getPlayers"
-      :key="`player-${index}`"
-    />
+    <Player :player="player" v-for="(player) in getPlayers" :key="`player-${player.id}`"/>
   </div>
 </template>
 
@@ -18,9 +13,6 @@ export default {
     getPlayers() {
       return this.$store.state.players;
     }
-  },
-  updated() {
-    console.log('--------- players updated ---------')
   }
 };
 </script>

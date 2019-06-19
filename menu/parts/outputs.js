@@ -9,6 +9,8 @@ module.exports = () => {
       { id: 'fullscreen', label: 'Fullscreen', submenu: displays.getFullscreenDisplays() },
       { id: 'windowed', label: 'Windowed', submenu: displays.getWindowedDisplays() },
       { type: 'separator' },
+      { id: 'previewMonitor', label: 'Preview Monitor', click: displays.createPreviewMonitorOutput },
+      { type: 'separator' },
       { id: 'showTestCard', label: 'Show Test Card' },
       { id: 'showDisplayInfo', label: 'Show Display Info' },
     ]
