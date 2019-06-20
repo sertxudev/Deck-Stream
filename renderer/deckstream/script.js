@@ -32,6 +32,7 @@ const store = new Vuex.Store({
       state.players[index].src = ''
       state.players[index].src = payload.src
       state.players[index].loop = payload.loop
+      state.players[index].pauseOnEnd = payload.pauseOnEnd
     },
     changePreviewSource(state, payload) {
       let index = state.players.findIndex((player) => player.id === payload.id)
@@ -46,7 +47,7 @@ const store = new Vuex.Store({
       state.players[index].remainingTime = payload.remainingTime
     },
     addPlayer(state, payload) {
-      state.players.push({ id: payload.id, src: "", loop: false, previewSrc: "", currentTime: null, remainingTime: null })
+      state.players.push({ id: payload.id, src: "", loop: false, pauseOnEnd: true, previewSrc: "", currentTime: null, remainingTime: null })
     }
   },
   plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime'] })]
@@ -82,7 +83,7 @@ new Vue({
       })
 
       ipcRenderer.on('add-clip', (event, argv) => {
-        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0, loop: argv.loop})
+        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd})
       })
 
       ipcRenderer.on('add-deck', (event, argv) => {

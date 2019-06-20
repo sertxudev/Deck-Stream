@@ -27,7 +27,7 @@ function addNew(menuItem, window) {
 
     if (!argv.cancelled) {
       global.win.focus()
-      global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group, loop: argv.loop })
+      global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd })
       return true
     }
 

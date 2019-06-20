@@ -74,10 +74,12 @@ const store = new Vuex.Store({
           $(`#deck-${payload.id} #${state.players[payload.id].id}`).show()
           $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].play()
 
-          $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].onended = () => {
-            $(`#deck-${payload.id} #blackout`).fadeIn(state.fadeDuration / 2)
-            $(`#deck-${payload.id} #${state.players[payload.id].id}`).hide()
-            $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].src = ''
+          if (!payload.pauseOnEnd) {
+            $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].onended = () => {
+              $(`#deck-${payload.id} #blackout`).fadeIn(state.fadeDuration / 2)
+              $(`#deck-${payload.id} #${state.players[payload.id].id}`).hide()
+              $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].src = ''
+            }
           }
 
           $(`#deck-${payload.id} #blackout`).fadeOut(state.fadeDuration / 2)
@@ -149,10 +151,12 @@ const store = new Vuex.Store({
           $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`).show()
           $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].play()
 
-          $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].onended = () => {
-            $(`#deck-${payload.id}-preview #blackout`).fadeIn(state.fadeDuration / 2)
-            $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`).hide()
-            $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].src = ''
+          if (!payload.pauseOnEnd) {
+            $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].onended = () => {
+              $(`#deck-${payload.id}-preview #blackout`).fadeIn(state.fadeDuration / 2)
+              $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`).hide()
+              $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].src = ''
+            }
           }
 
           $(`#deck-${payload.id}-preview #blackout`).fadeOut(state.fadeDuration / 2)

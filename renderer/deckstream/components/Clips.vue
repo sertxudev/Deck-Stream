@@ -2,7 +2,6 @@
   <draggable class="sortable flex-wrap d-flex w-100" :list="getActiveDeckClips" group="clips">
     <Clip
       :clip="clip"
-      :cIndex="cIndex"
       v-for="(clip, cIndex) in getActiveDeckClips"
       :key="`clip-${gIndex}-${cIndex}`"
     />

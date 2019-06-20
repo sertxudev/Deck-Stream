@@ -6,8 +6,8 @@
         class="card-img-top"
         preload="metadata"
         v-on:error="/*sourceError($event)*/"
-        v-on:dblclick="setStream(getActiveDeckId, clip.path, clip.loop)"
-        v-on:click="setPreload(getActiveDeckId, clip.path, clip.loop)"
+        v-on:dblclick="setStream(getActiveDeckId, clip)"
+        v-on:click="setPreload(getActiveDeckId, clip)"
         v-if="fileIsVideo(clip.path)"
       ></video>
 
@@ -15,8 +15,8 @@
         :src="clip.path"
         class="card-img-top"
         v-on:error="sourceError($event)"
-        v-on:dblclick="setStream(getActiveDeckId, clip.path)"
-        v-on:click="setPreload(getActiveDeckId, clip.path)"
+        v-on:dblclick="setStream(getActiveDeckId, clip)"
+        v-on:click="setPreload(getActiveDeckId, clip)"
         v-if="fileIsImage(clip.path)"
       >
     </template>
@@ -32,7 +32,7 @@ import { ipcRenderer, remote } from "electron";
 const { Menu, MenuItem } = remote;
 
 export default {
-  props: ["clip", "cIndex", "gIndex"],
+  props: ["clip"],
   computed: {
     getActiveDeckId() {
       let data = this.$store.state.data
@@ -46,18 +46,18 @@ export default {
           <small class="border border-danger rounded" style="padding: 1px 4px;color: #b3b3b3;">Replace</small>
         </div>`
     },
-    setStream: function (id, url, loop = false) {
-      url = url.split("#t=").shift();
-      this.$store.commit("changeSource", { id, src: url, loop })
+    setStream: function (id, clip) {
+      let url = clip.path.split("#t=").shift()
+      this.$store.commit("changeSource", { id, src: url, ...clip })
       // ipcRenderer.send("enable-stream", { deck, url });
       // this.$store.state.players[deck].src = url
       // this.$root.$refs[`video-${deck}`].src = url;
       // this.$root.$refs[`video-${deck}`].play();
       // clearTimes();
     },
-    setPreload: function (id, url, loop = false) {
-      url = url.split("#t=").shift();
-      this.$store.commit("changePreviewSource", { id, src: url, loop })
+    setPreload: function (id, clip) {
+      let url = clip.path.split("#t=").shift()
+      this.$store.commit("changePreviewSource", { id, src: url, ...clip })
       // ipcRenderer.send("set-preload", { deck, url });
     },
     fileIsVideo: function (filename) {

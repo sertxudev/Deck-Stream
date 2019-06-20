@@ -80,6 +80,19 @@ textarea.form-control {
   padding-left: 15px;
 }
 
+.col-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.text-center {
+  text-align: center;
+}
+
 button, input, optgroup, select, textarea {
   margin: 0;
   font-family: inherit;

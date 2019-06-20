@@ -48,16 +48,14 @@ const store = new Vuex.Store({
           $(`#${state.player.id}`).show()
           $(`#${state.player.id}`)[0].loop = payload.loop
 
-          // ipcRenderer.once('play-video', (event, argv) => {
-          // console.log('play-video')
-          // if (deckID != argv.deck) return null
           $(`#${state.player.id}`)[0].play()
-          // })
 
-          $(`#${state.player.id}`)[0].onended = () => {
-            $('#blackout').fadeIn(state.fadeDuration / 2)
-            $(`#${state.player.id}`).hide()
-            $(`#${state.player.id}`)[0].src = ''
+          if (!payload.pauseOnEnd) {
+            $(`#${state.player.id}`)[0].onended = () => {
+              $('#blackout').fadeIn(state.fadeDuration / 2)
+              $(`#${state.player.id}`).hide()
+              $(`#${state.player.id}`)[0].src = ''
+            }
           }
 
           $('#blackout').fadeOut(state.fadeDuration / 2)
