@@ -1,5 +1,13 @@
 <template>
-  <video src :id="id" muted @timeupdate="setSync($event)" @play="setSync($event)" width="100%"/>
+  <video
+    src
+    :id="id"
+    muted
+    @timeupdate="setSync($event)"
+    @play="setSync($event)"
+    width="100%"
+    preload="auto"
+  />
 </template>
 
 <script>
@@ -27,3 +35,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+video {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+</style>
+

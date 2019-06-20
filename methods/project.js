@@ -3,22 +3,26 @@ const fs = require('fs')
 const config = require('./config')
 const file = require('./file')
 const menu = require('./menu')
+const displays = require('./displays')
 
 function getBlank() {
   return {
     "name": "undefined", "description": null, "decks": [{
-      "id": "py4q7bzrb","name": "Deck 1", "outputs": [], "groups": [{
+      "id": "py4q7bzrb", "name": "Deck 1", "outputs": [], "groups": [{
         "name": "Group 1", "clips": [{ "path": "../assets/black.jpg", "name": "Blackout" }]
       }]
     }],
     "activeDeck": 0,
     "activeGroup": 0,
-    "activeClip": 0
+    "activeClip": 0,
+    "fadeDuration": 0
   }
 }
 
 function newProject() {
   global.filePath = null
+  displays.disableOutputs()
+  global.winout = []
   global.win.reload()
 }
 
@@ -79,7 +83,7 @@ function save() {
 function saveAs() {
   global.win.webContents.send('get-name')
   ipcMain.once('get-name', (event, name) => {
-    let path = dialog.showSaveDialogSync({ filters: [{ name: 'Deck Stream File', extensions: ['dsf']}], defaultPath: `*/${name}` })
+    let path = dialog.showSaveDialogSync({ filters: [{ name: 'Deck Stream File', extensions: ['dsf'] }], defaultPath: `*/${name}` })
     if (!path) return false
     global.filePath = path
     return save()
@@ -87,15 +91,19 @@ function saveAs() {
 }
 
 function changeSettings(menuItem, window) {
-  let modal = new BrowserWindow({
-    height: 320, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
-    maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
+  let modal
+    
+  window.webContents.send('get-data')
+  ipcMain.once('get-data', (event, argv) => {
+    modal = new BrowserWindow({
+      height: 420, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
+      maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
+    })
+    modal.loadFile('./modals/settings/index.html', { query: { name: argv.name, description: argv.description, fadeDuration: argv.fadeDuration } })
+    modal.once('ready-to-show', () => modal.show())
+    modal.setMenu(null)
+    modal.on('close', () => ipcMain.removeListener('save-settings', saveSettingsEvent))
   })
-  modal.loadFile('./modals/settings/index.html')
-  modal.once('ready-to-show', () => modal.show())
-  modal.setMenu(null)
-
-  modal.on('close', () => ipcMain.removeListener('save-settings', saveSettingsEvent))
 
   ipcMain.once('save-settings', saveSettingsEvent)
 
@@ -103,7 +111,7 @@ function changeSettings(menuItem, window) {
     modal.destroy()
 
     if (!argv.cancelled) {
-      global.win.send('update-settings', { name: argv.name, description: argv.description })
+      global.win.send('update-settings', { name: argv.name, description: argv.description, fadeDuration: argv.fadeDuration })
       global.win.setTitle('Deck Stream - ' + argv.name)
       return true
     }
@@ -117,12 +125,12 @@ function processDataSave(data) {
     let outputs = []
 
     // if(deck.outputs.length) {
-      deck.outputs.forEach(id => {
-        let window = BrowserWindow.fromId(id)
-        if (!window) return null
-        let output = { ...window.getBounds(), maximized: window.isMaximized(), fullscreened: window.isFullScreen() }
-        outputs.push(output)
-      })
+    deck.outputs.forEach(id => {
+      let window = BrowserWindow.fromId(id)
+      if (!window) return null
+      let output = { ...window.getBounds(), maximized: window.isMaximized(), fullscreened: window.isFullScreen() }
+      outputs.push(output)
+    })
     // }
 
     deck.outputs = outputs

@@ -44,39 +44,45 @@ function createOutput(menuItem) {
   let index = menuItem.id.split('display')[1]
   let display = getDisplays()[index - 1]
 
-  global.win.send('get-activeDeck-Fade')
-  ipcMain.once('get-activeDeck-Fade', (event, argv) => {
-    let window = new BrowserWindow({
-      x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
-      title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+  global.win.send('get-activeDeckData')
+  ipcMain.once('get-activeDeckData', (event, argv) => {
+    global.win.send('get-fadeDuration')
+    ipcMain.once('get-fadeDuration', (event, fade) => {
+      let window = new BrowserWindow({
+        x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
+        title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+      })
+
+      window.loadFile('./dist/livestream.html', { query: { id: argv.deck.id, fadeDuration: fade.fadeDuration } })
+      electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
+      if (menuItem.accelerator) window.setFullScreen(true)
+      // window.setMenu(null)
+
+      if (!global.winout[argv.deck.id]) global.winout[argv.deck.id] = []
+      global.winout[argv.deck.id].push(window)
+      global.win.send('add-output', window.id)
     })
-
-    window.loadFile('./dist/livestream.html', { query: { id: argv.deck.id, fadeDuration: argv.fadeDuration } })
-    electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
-    if (menuItem.accelerator) window.setFullScreen(true)
-    // window.setMenu(null)
-
-    if (!global.winout[argv.deck.id]) global.winout[argv.deck.id] = []
-    global.winout[argv.deck.id].push(window)
-    global.win.send('add-output', window.id)
   })
 }
 
 function createPreviewMonitorOutput(menuItem) {
   let display = getDisplays()[0]
 
-  let window = new BrowserWindow({
-    x: display.x, y: display.y, width: 1280, height: 720,
-    backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
-  })
+  global.win.send('get-fadeDuration')
+  ipcMain.once('get-fadeDuration', (event, argv) => {
+    let window = new BrowserWindow({
+      x: display.x, y: display.y, width: 1280, height: 720,
+      backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+    })
 
-  window.loadFile('./dist/previewmonitor.html')
-  electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
-  if (menuItem.accelerator) window.setFullScreen(true)
-  // window.setMenu(null)
-  const menuTemplate = require('../renderer/previewmonitor/menu/menu')
-  const menu = Menu.buildFromTemplate(menuTemplate.build())
-  window.setMenu(menu)
+    window.loadFile('./dist/previewmonitor.html', { query: { fadeDuration: argv.fadeDuration } })
+    electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
+    if (menuItem.accelerator) window.setFullScreen(true)
+    // window.setMenu(null)
+    const menuTemplate = require('../renderer/previewmonitor/menu/menu')
+    const menu = Menu.buildFromTemplate(menuTemplate.build())
+    window.setMenu(menu)
+  })
 
   // if (!global.winout[argv.id]) global.winout[argv.id] = []
   // global.winout[argv.id].push(window)

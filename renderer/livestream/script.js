@@ -22,11 +22,16 @@ const store = new Vuex.Store({
   state: {
     player: { src: "", currentTime: null, id: 'videoA' },
     image: { src: "", id: 'imageA' },
-    fadeDuration
+    fadeDuration,
+    previousEnableFade: false
   },
   mutations: {
     changeSource(state, payload) {
       if (deckID !== payload.id) return null
+
+      let enabledFade = payload.enableFade || state.previousEnableFade
+      console.log(payload.enableFade || state.previousEnableFade, payload.enableFade, state.previousEnableFade)
+      state.previousEnableFade = payload.enableFade
 
       state.player.id = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
       let video_other = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
@@ -34,31 +39,37 @@ const store = new Vuex.Store({
       state.image.id = (state.image.id == 'imageA') ? 'imageB' : 'imageA'
       let image_other = (state.image.id == 'imageA') ? 'imageB' : 'imageA'
 
-      $('#blackout').fadeIn(state.fadeDuration / 2)
+      if (enabledFade) {
+        $('#blackout').fadeIn(state.fadeDuration / 2)
+      } else {
+        $('#blackout').hide()
+      }
 
       setTimeout(() => {
         if (fileIsVideo(payload.src)) {
-          $(`#${image_other}`).hide()
-          $(`#${image_other}`)[0].src = ''
-
-          $(`#${video_other}`).hide()
-          $(`#${video_other}`)[0].src = ''
-
           $(`#${state.player.id}`)[0].src = payload.src
+
+          $(`#${state.player.id}`)[0].oncanplaythrough = () => {
+            $(`#${image_other}`).hide()
+            $(`#${image_other}`)[0].src = ''
+
+            $(`#${video_other}`).hide()
+            $(`#${video_other}`)[0].src = ''
+          }
+
           $(`#${state.player.id}`).show()
           $(`#${state.player.id}`)[0].loop = payload.loop
-
           $(`#${state.player.id}`)[0].play()
 
           if (!payload.pauseOnEnd) {
             $(`#${state.player.id}`)[0].onended = () => {
-              $('#blackout').fadeIn(state.fadeDuration / 2)
+              if (enabledFade) $('#blackout').fadeIn(state.fadeDuration / 2)
               $(`#${state.player.id}`).hide()
               $(`#${state.player.id}`)[0].src = ''
             }
           }
 
-          $('#blackout').fadeOut(state.fadeDuration / 2)
+          if (enabledFade) $('#blackout').fadeOut(state.fadeDuration / 2)
         } else if (fileIsImage(payload.src)) {
           $(`#${video_other}`).hide()
           $(`#${video_other}`)[0].src = ''
@@ -68,7 +79,7 @@ const store = new Vuex.Store({
 
           $(`#${state.image.id}`)[0].src = payload.src
           $(`#${state.image.id}`).show()
-          $('#blackout').fadeOut(state.fadeDuration / 2)
+          if (enabledFade) $('#blackout').fadeOut(state.fadeDuration / 2)
         } else {
           $(`#${video_other}`).hide()
           $(`#${video_other}`)[0].src = ''
@@ -83,7 +94,7 @@ const store = new Vuex.Store({
           $(`#${state.player.id}`)[0].src = ''
           return null
         }
-      }, state.fadeDuration / 2)
+      }, (enabledFade ? state.fadeDuration / 2 : 0))
     },
     updateCurrentTime(state, payload) {
       if (deckID !== payload.id) return null
@@ -94,9 +105,12 @@ const store = new Vuex.Store({
     },
     updateRemainingTime(state, payload) {
       return false
+    },
+    updateFadeDuration(state, fadeDuration) {
+      state.fadeDuration = fadeDuration
     }
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime', 'updateFadeDuration'] })]
 })
 
 new Vue({

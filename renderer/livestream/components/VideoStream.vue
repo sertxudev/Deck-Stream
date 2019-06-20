@@ -1,5 +1,5 @@
 <template>
-  <video src :id="id" muted @timeupdate="setSync($event)" @play="setSync($event)"/>
+  <video src :id="id" muted @timeupdate="setSync($event)" @play="setSync($event)" preload="auto"/>
 </template>
 
 <script>

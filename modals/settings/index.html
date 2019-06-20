@@ -10,34 +10,6 @@
 </head>
 
 <body>
-
-  <!-- <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div>
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name">
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div>
-          <label for="description">Description</label>
-          <textarea name="description" id="description" cols="30" rows="10"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div>
-          <button id="submit">Save</button>
-          <button id="cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
   <div class="container">
     <div class="row mt-3">
       <div class="col-12">
@@ -56,6 +28,16 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="fadeDuration">Fade duration</label>
+          <input type="number" class="form-control" id="fadeDuration" placeholder="400">
+          <small id="fadeDurationHelp" class="form-text text-muted">The number inserted will be interpreted as
+            milliseconds.</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-12 text-right">
         <button id="cancel" class="btn btn-secondary">Cancel</button>
         <button id="submit" class="btn btn-primary">Save</button>
@@ -67,22 +49,33 @@
     const { ipcRenderer, remote } = require('electron')
     let data = {}
 
+    const urlParams = new URLSearchParams(window.location.search)
+    document.getElementById('name').value = urlParams.get('name')
+    document.getElementById('description').value = urlParams.get('description')
+    document.getElementById('fadeDuration').value = urlParams.get('fadeDuration')
+
     document.getElementById('submit').addEventListener('click', () => {
       let name = document.getElementById('name').value
       let description = document.getElementById('description').value
+      let fadeDuration = parseInt(document.getElementById('fadeDuration').value)
 
-      if(!name.trim().length) {
-        document.getElementById('name').classList.add('invalid')
+      if (!name.trim().length) {
+        // document.getElementById('name').classList.add('invalid')
+        // return false
+        name = 'undefined'
+      }
+
+      if (isNaN(fadeDuration)) {
+        document.getElementById('fadeDuration').classList.add('invalid')
         return false
       }
 
-      ipcRenderer.send('save-settings', { cancelled: false, name, description })
+      ipcRenderer.send('save-settings', { cancelled: false, name, description, fadeDuration })
     })
 
     document.getElementById('cancel').addEventListener('click', () => {
       ipcRenderer.send('save-settings', { cancelled: true })
     })
-    // setTimeout(() => ipcRenderer.send('create-project', data), 2000)
   </script>
 </body>
 

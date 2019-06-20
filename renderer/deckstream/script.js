@@ -33,6 +33,7 @@ const store = new Vuex.Store({
       state.players[index].src = payload.src
       state.players[index].loop = payload.loop
       state.players[index].pauseOnEnd = payload.pauseOnEnd
+      state.players[index].enableFade = payload.enableFade
     },
     changePreviewSource(state, payload) {
       let index = state.players.findIndex((player) => player.id === payload.id)
@@ -48,9 +49,12 @@ const store = new Vuex.Store({
     },
     addPlayer(state, payload) {
       state.players.push({ id: payload.id, src: "", loop: false, pauseOnEnd: true, previewSrc: "", currentTime: null, remainingTime: null })
+    },
+    updateFadeDuration(state, fadeDuration) {
+      state.data.fadeDuration = fadeDuration
     }
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime', 'updateFadeDuration'] })]
 })
 
 new Vue({
@@ -72,7 +76,8 @@ new Vue({
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', data))
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', data.name))
       ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', data.decks[data.activeDeck]))
-      ipcRenderer.on('get-activeDeck-Fade', (event) => ipcRenderer.send('get-activeDeck-Fade', { deck: data.decks[data.activeDeck], fadeDuration: data.fadeDuration }))
+      ipcRenderer.on('get-activeDeckData', (event) => ipcRenderer.send('get-activeDeckData', { deck: data.decks[data.activeDeck] }))
+      ipcRenderer.on('get-fadeDuration', (event) => ipcRenderer.send('get-fadeDuration', { fadeDuration: data.fadeDuration }))
 
       ipcRenderer.on('add-output', (event, id) => data.decks[data.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => data.decks[data.activeDeck].outputs = [])
@@ -80,6 +85,7 @@ new Vue({
       ipcRenderer.on('update-settings', (event, argv) => {
         data.name = argv.name
         data.description = argv.description
+        this.$store.commit('updateFadeDuration', argv.fadeDuration)
       })
 
       ipcRenderer.on('add-clip', (event, argv) => {

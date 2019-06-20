@@ -145,3 +145,17 @@ button, select {
 .invalid {
   border-color: #ef5350;
 }
+
+.text-muted {
+  color: #a4abb1!important;
+}
+
+.form-text {
+  display: block;
+  margin-top: .25rem;
+}
+
+.small, small {
+  font-size: 80%;
+  font-weight: 400;
+}

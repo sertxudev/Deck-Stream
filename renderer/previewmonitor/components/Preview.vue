@@ -1,5 +1,5 @@
 <template>
-  <div :id="`deck-${id}-preview`" class="position-relative">
+  <div :id="`deck-${id}-preview`" class="position-relative overflow-hidden">
     <BlackOut/>
     <VideoStream id="videoA" preview="true" :index="id"/>
     <VideoStream id="videoB" preview="true" :index="id"/>
@@ -30,3 +30,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.overflow-hidden {
+  overflow: hidden;
+}
+</style>
