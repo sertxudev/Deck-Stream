@@ -9,15 +9,16 @@ export default {
     getRemainingTime() {
       const data = this.$store.state.players[this.index];
       if (!data) return null
+      if (data.loop) return this.toHHMMSS()
 
       if (data.remainingTime < 40) data.flashTime = true;
       if (data.remainingTime < 20) data.flashDanger = true;
-      
+
       return this.toHHMMSS(data.remainingTime)
     }
   },
   methods: {
-    toHHMMSS: function(time) {
+    toHHMMSS: function (time) {
       var sec_num = parseInt(time, 10);
       var hours = Math.floor(sec_num / 3600);
       var minutes = Math.floor((sec_num - hours * 3600) / 60);

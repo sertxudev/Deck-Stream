@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron'
 
 function addNew(menuItem, window) {
   let modal = new BrowserWindow({
-    height: 360, width: 400, parent: window, minimizable: false, modal: true,
+    height: 390, width: 400, parent: window, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/add-clip/index.html')
@@ -27,7 +27,7 @@ function addNew(menuItem, window) {
 
     if (!argv.cancelled) {
       global.win.focus()
-      global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group })
+      global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group, loop: argv.loop })
       return true
     }
 

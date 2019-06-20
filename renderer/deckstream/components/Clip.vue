@@ -6,8 +6,8 @@
         class="card-img-top"
         preload="metadata"
         v-on:error="/*sourceError($event)*/"
-        v-on:dblclick="setStream(getActiveDeckId, clip.path)"
-        v-on:click="setPreload(getActiveDeckId, clip.path, $event)"
+        v-on:dblclick="setStream(getActiveDeckId, clip.path, clip.loop)"
+        v-on:click="setPreload(getActiveDeckId, clip.path, clip.loop)"
         v-if="fileIsVideo(clip.path)"
       ></video>
 
@@ -16,7 +16,7 @@
         class="card-img-top"
         v-on:error="sourceError($event)"
         v-on:dblclick="setStream(getActiveDeckId, clip.path)"
-        v-on:click="setPreload(getActiveDeckId, clip.path, $event)"
+        v-on:click="setPreload(getActiveDeckId, clip.path)"
         v-if="fileIsImage(clip.path)"
       >
     </template>
@@ -46,18 +46,18 @@ export default {
           <small class="border border-danger rounded" style="padding: 1px 4px;color: #b3b3b3;">Replace</small>
         </div>`
     },
-    setStream: function (id, url) {
+    setStream: function (id, url, loop = false) {
       url = url.split("#t=").shift();
-      this.$store.commit("changeSource", { id, src: url })
+      this.$store.commit("changeSource", { id, src: url, loop })
       // ipcRenderer.send("enable-stream", { deck, url });
       // this.$store.state.players[deck].src = url
       // this.$root.$refs[`video-${deck}`].src = url;
       // this.$root.$refs[`video-${deck}`].play();
       // clearTimes();
     },
-    setPreload: function (id, url) {
+    setPreload: function (id, url, loop = false) {
       url = url.split("#t=").shift();
-      this.$store.commit("changePreviewSource", { id, src: url })
+      this.$store.commit("changePreviewSource", { id, src: url, loop })
       // ipcRenderer.send("set-preload", { deck, url });
     },
     fileIsVideo: function (filename) {

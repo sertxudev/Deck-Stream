@@ -1,5 +1,5 @@
 <template>
-  <audio :src="player.src" controls @timeupdate="onTimeUpdate"></audio>
+  <audio :src="player.src" controls @timeupdate="onTimeUpdate" :loop="player.loop"></audio>
   <!-- <video :src="player.src" controls @timeupdate="onTimeUpdate"></video> -->
 </template>
 
@@ -17,12 +17,16 @@ export default {
       this.$store.commit("updateCurrentTime", { id: this.player.id, currentTime: this.$el.currentTime });
 
       let remaining = this.$el.duration - this.$el.currentTime
-      this.$store.commit("updateRemainingTime", {id: this.player.id, remainingTime: remaining});
+      this.$store.commit("updateRemainingTime", { id: this.player.id, remainingTime: remaining });
     },
   },
   updated() {
-    this.clearTimes();
-    this.$el.play();
+    this.clearTimes()
+    // console.log('fadeDuration', this.$store.state.data.fadeDuration)
+    // setTimeout(() => {
+      // ipcRenderer.send('play-video', { deck: this.player.id })
+      this.$el.play()
+    // }, this.$store.state.data.fadeDuration / 2)
   }
 };
 </script>

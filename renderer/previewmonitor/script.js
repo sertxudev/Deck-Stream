@@ -18,24 +18,24 @@ let players = {}
 let images = {}
 let playersPreview = {}
 let imagesPreview = {}
+let actives = {}
 
 ids.forEach(id => {
-  players[id] = { currentTime: null, remainingTime: null, id: 'videoA' }
-  images[id] = { currentTime: null, id: 'imageA' }
-  playersPreview[id] = { currentTime: null, remainingTime: null, id: 'videoA' }
-  imagesPreview[id] = { currentTime: null, id: 'imageA' }
+  players[id] = { currentTime: null, remainingTime: null, id: 'videoA', interval: null }
+  images[id] = { currentTime: null, id: 'imageA', interval: null }
+  playersPreview[id] = { currentTime: null, remainingTime: null, id: 'videoA', interval: null }
+  imagesPreview[id] = { currentTime: null, id: 'imageA', interval: null }
+  actives[id] = { live: null, preview: null }
 })
 
 const store = new Vuex.Store({
   state: {
-    // player: { src: "", currentTime: null, id: 'videoA' },
-    // image: { src: "", id: 'imageA' },
-    // fadeDuration: 500
     decks: ids,
     players,
     images,
     playersPreview,
     imagesPreview,
+    actives,
     fadeDuration: 500
   },
   mutations: {
@@ -52,11 +52,23 @@ const store = new Vuex.Store({
 
       setTimeout(() => {
         if (fileIsVideo(payload.src)) {
+          state.actives[payload.id].live = 'video'
+
           $(`#deck-${payload.id} #${image_other}`).hide()
           $(`#deck-${payload.id} #${image_other}`)[0].src = ''
 
           $(`#deck-${payload.id} #${video_other}`).hide()
           $(`#deck-${payload.id} #${video_other}`)[0].src = ''
+
+          state.players[payload.id].loop = payload.loop
+          $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].loop = payload.loop
+
+          state.players[payload.id].remainingTime = null
+          state.players[payload.id].currentTime = null
+
+          clearInterval(state.images[payload.id].interval)
+          clearInterval(state.players[payload.id].interval)
+          if (payload.loop) state.players[payload.id].interval = setInterval(() => state.players[payload.id].currentTime++, 1000)
 
           $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].src = payload.src
           $(`#deck-${payload.id} #${state.players[payload.id].id}`).show()
@@ -70,17 +82,25 @@ const store = new Vuex.Store({
 
           $(`#deck-${payload.id} #blackout`).fadeOut(state.fadeDuration / 2)
         } else if (fileIsImage(payload.src)) {
+          state.actives[payload.id].live = 'image'
+
           $(`#deck-${payload.id} #${video_other}`).hide()
           $(`#deck-${payload.id} #${video_other}`)[0].src = ''
 
           $(`#deck-${payload.id} #${image_other}`).hide()
           $(`#deck-${payload.id} #${image_other}`)[0].src = ''
 
+          clearInterval(state.images[payload.id].interval)
+          clearInterval(state.players[payload.id].interval)
+          state.images[payload.id].currentTime = 0
+          state.images[payload.id].interval = setInterval(() => state.images[payload.id].currentTime++, 1000)
+
           $(`#deck-${payload.id} #${state.images[payload.id].id}`)[0].src = payload.src
           $(`#deck-${payload.id} #${state.images[payload.id].id}`).show()
-          state.images[payload.id].currentTime = 0
           $(`#deck-${payload.id} #blackout`).fadeOut(state.fadeDuration / 2)
         } else {
+          state.actives[payload.id].live = null
+
           $(`#deck-${payload.id} #${video_other}`).hide()
           $(`#deck-${payload.id} #${video_other}`)[0].src = ''
 
@@ -107,11 +127,23 @@ const store = new Vuex.Store({
 
       setTimeout(() => {
         if (fileIsVideo(payload.src)) {
+          state.actives[payload.id].preview = 'video'
+
           $(`#deck-${payload.id}-preview #${image_other}`).hide()
           $(`#deck-${payload.id}-preview #${image_other}`)[0].src = ''
 
           $(`#deck-${payload.id}-preview #${video_other}`).hide()
           $(`#deck-${payload.id}-preview #${video_other}`)[0].src = ''
+
+          state.playersPreview[payload.id].loop = payload.loop
+          $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].loop = payload.loop
+
+          state.playersPreview[payload.id].remainingTime = null
+          state.playersPreview[payload.id].currentTime = null
+
+          clearInterval(state.playersPreview[payload.id].interval)
+          clearInterval(state.imagesPreview[payload.id].interval)
+          if (payload.loop) state.playersPreview[payload.id].interval = setInterval(() => state.playersPreview[payload.id].currentTime++, 1000)
 
           $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].src = payload.src
           $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`).show()
@@ -125,17 +157,25 @@ const store = new Vuex.Store({
 
           $(`#deck-${payload.id}-preview #blackout`).fadeOut(state.fadeDuration / 2)
         } else if (fileIsImage(payload.src)) {
+          state.actives[payload.id].preview = 'image'
+
           $(`#deck-${payload.id}-preview #${video_other}`).hide()
           $(`#deck-${payload.id}-preview #${video_other}`)[0].src = ''
 
           $(`#deck-${payload.id}-preview #${image_other}`).hide()
           $(`#deck-${payload.id}-preview #${image_other}`)[0].src = ''
 
+          clearInterval(state.playersPreview[payload.id].interval)
+          clearInterval(state.imagesPreview[payload.id].interval)
+          state.imagesPreview[payload.id].currentTime = 0
+          state.imagesPreview[payload.id].interval = setInterval(() => state.imagesPreview[payload.id].currentTime++, 1000)
+
           $(`#deck-${payload.id}-preview #${state.imagesPreview[payload.id].id}`)[0].src = payload.src
           $(`#deck-${payload.id}-preview #${state.imagesPreview[payload.id].id}`).show()
-          state.imagesPreview[payload.id].currentTime = 0
           $(`#deck-${payload.id}-preview #blackout`).fadeOut(state.fadeDuration / 2)
         } else {
+          state.actives[payload.id].preview = null
+
           $(`#deck-${payload.id}-preview #${video_other}`).hide()
           $(`#deck-${payload.id}-preview #${video_other}`)[0].src = ''
 
@@ -152,10 +192,15 @@ const store = new Vuex.Store({
       }, state.fadeDuration / 2)
     },
     updateCurrentTime(state, payload) {
+      if (state.players[payload.id].loop == true) return null
       state.players[payload.id].currentTime = payload.currentTime
-    }
+    },
+    updateRemainingTime(state, payload) {
+      if (state.players[payload.id].loop == true) return null
+      state.players[payload.id].remainingTime = payload.remainingTime
+    },
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime'] })]
 })
 
 const app = new Vue({

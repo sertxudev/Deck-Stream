@@ -44,7 +44,13 @@ const store = new Vuex.Store({
 
           $(`#${state.player.id}`)[0].src = payload.src
           $(`#${state.player.id}`).show()
+          $(`#${state.player.id}`)[0].loop = payload.loop
+
+          // ipcRenderer.once('play-video', (event, argv) => {
+          // console.log('play-video')
+          // if (deckID != argv.deck) return null
           $(`#${state.player.id}`)[0].play()
+          // })
 
           $(`#${state.player.id}`)[0].onended = () => {
             $('#blackout').fadeIn(state.fadeDuration / 2)
@@ -80,11 +86,17 @@ const store = new Vuex.Store({
       }, state.fadeDuration / 2)
     },
     updateCurrentTime(state, payload) {
-      if(deckID !== payload.id) return null
+      if (deckID !== payload.id) return null
       state.player.currentTime = payload.currentTime
+    },
+    changePreviewSource(state, payload) {
+      return false
+    },
+    updateRemainingTime(state, payload) {
+      return false
     }
   },
-  plugins: [sharedMutations({ predicate: ['changeSource', 'updateCurrentTime'] })]
+  plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime'] })]
 })
 
 new Vue({

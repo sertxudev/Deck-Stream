@@ -37,6 +37,16 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="loop">
+            <label class="form-check-label" for="loop">Loop</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-12 text-right">
         <button id="cancel" class="btn btn-secondary">Cancel</button>
         <button id="submit" class="btn btn-primary">Save</button>
@@ -81,6 +91,7 @@
     document.getElementById('submit').addEventListener('click', () => {
       let name = document.getElementById('name').value
       let group = document.getElementById('group').value
+      let loop = document.getElementById('loop').checked
 
       if (!group || group == -1) {
         document.getElementById('group').classList.add('invalid')
@@ -92,7 +103,7 @@
         return false
       }
 
-      ipcRenderer.send('add-clip', { cancelled: false, path: filePath, name, group: parseInt(group) })
+      ipcRenderer.send('add-clip', { cancelled: false, path: filePath, name, group: parseInt(group),loop })
     })
 
     document.getElementById('cancel').addEventListener('click', () => {
