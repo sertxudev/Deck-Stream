@@ -1,5 +1,5 @@
 const electron = require('electron')
-const { BrowserWindow, ipcMain } = require('electron')
+const { BrowserWindow, ipcMain, Menu } = require('electron')
 const electronLocalshortcut = require('electron-localshortcut')
 
 function getFullscreenDisplays() {
@@ -44,20 +44,20 @@ function createOutput(menuItem) {
   let index = menuItem.id.split('display')[1]
   let display = getDisplays()[index - 1]
 
-  global.win.send('get-activeDeck')
-  ipcMain.once('get-activeDeck', (event, argv) => {
+  global.win.send('get-activeDeck-Fade')
+  ipcMain.once('get-activeDeck-Fade', (event, argv) => {
     let window = new BrowserWindow({
       x: display.x, y: display.y, width: 1280, height: 720, alwaysOnTop: true,
-      title: argv.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
+      title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
     })
 
-    window.loadFile('./dist/livestream.html', { query: { id: argv.id } })
+    window.loadFile('./dist/livestream.html', { query: { id: argv.deck.id, fadeDuration: argv.fadeDuration } })
     electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
     if (menuItem.accelerator) window.setFullScreen(true)
     // window.setMenu(null)
 
-    if (!global.winout[argv.id]) global.winout[argv.id] = []
-    global.winout[argv.id].push(window)
+    if (!global.winout[argv.deck.id]) global.winout[argv.deck.id] = []
+    global.winout[argv.deck.id].push(window)
     global.win.send('add-output', window.id)
   })
 }
@@ -74,6 +74,9 @@ function createPreviewMonitorOutput(menuItem) {
   electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
   if (menuItem.accelerator) window.setFullScreen(true)
   // window.setMenu(null)
+  const menuTemplate = require('../renderer/previewmonitor/menu/menu')
+  const menu = Menu.buildFromTemplate(menuTemplate.build())
+  window.setMenu(menu)
 
   // if (!global.winout[argv.id]) global.winout[argv.id] = []
   // global.winout[argv.id].push(window)

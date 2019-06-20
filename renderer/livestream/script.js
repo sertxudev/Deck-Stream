@@ -9,22 +9,24 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './style.css'
 
 import $ from 'jquery'
+import { ipcMain } from 'electron';
 window.$ = $
 
 Vue.use(Vuex)
 
 const urlParams = new URLSearchParams(window.location.search)
 const deckID = urlParams.get('id')
+const fadeDuration = urlParams.get('fadeDuration')
 
 const store = new Vuex.Store({
   state: {
     player: { src: "", currentTime: null, id: 'videoA' },
     image: { src: "", id: 'imageA' },
-    fadeDuration: 500
+    fadeDuration
   },
   mutations: {
     changeSource(state, payload) {
-      if(deckID !== payload.id) return null
+      if (deckID !== payload.id) return null
 
       state.player.id = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
       let video_other = (state.player.id == 'videoA') ? 'videoB' : 'videoA'

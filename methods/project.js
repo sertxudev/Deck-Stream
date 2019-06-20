@@ -119,6 +119,7 @@ function processDataSave(data) {
     // if(deck.outputs.length) {
       deck.outputs.forEach(id => {
         let window = BrowserWindow.fromId(id)
+        if (!window) return null
         let output = { ...window.getBounds(), maximized: window.isMaximized(), fullscreened: window.isFullScreen() }
         outputs.push(output)
       })

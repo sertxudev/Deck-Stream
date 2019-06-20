@@ -1,10 +1,10 @@
 <template>
   <div :id="`deck-${id}-preview`" class="position-relative">
     <BlackOut/>
-    <VideoStream id="videoA"/>
-    <VideoStream id="videoB"/>
-    <ImageStream id="imageA"/>
-    <ImageStream id="imageB"/>
+    <VideoStream id="videoA" preview="true" :index="id"/>
+    <VideoStream id="videoB" preview="true" :index="id"/>
+    <ImageStream id="imageA" preview="true" :index="id"/>
+    <ImageStream id="imageB" preview="true" :index="id"/>
   </div>
 </template>
 
@@ -16,8 +16,17 @@ import ImageStream from './ImageStream'
 export default {
   components: { BlackOut, VideoStream, ImageStream },
   props: ['id'],
-  created() {
-    $(this.$el).height(Math.round(($(this.$el).width() / 16) * 9))
+  mounted() {
+    this.calculateHeight()
+    window.addEventListener('resize', (e) => {
+      e.preventDefault()
+      this.calculateHeight()
+    })
+  },
+  methods: {
+    calculateHeight: function () {
+      $(this.$el).height(Math.round(($(this.$el).width() / 16) * 9))
+    }
   }
 }
 </script>

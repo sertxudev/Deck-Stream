@@ -16,8 +16,17 @@ import ImageStream from './ImageStream'
 export default {
   components: { BlackOut, VideoStream, ImageStream },
   props: ['id'],
-  created() {
-    $(this.$el).height(Math.round(($(this.$el).width() / 16) * 9))
+  mounted() {
+    this.calculateHeight()
+    window.addEventListener('resize', (e) => {
+      e.preventDefault();
+      this.calculateHeight()
+    })
+  },
+  methods: {
+    calculateHeight: function () {
+      $(this.$el).height(Math.round(($(this.$el).width() / 16) * 9))
+    }
   }
 }
 </script>

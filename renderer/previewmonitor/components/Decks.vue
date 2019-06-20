@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Deck v-for="(id, index) in decksIds" :deck="id" :key="`deck-${index}`"/>
+    <Deck v-for="(id, index) in decksIds" :deck="id" :key="`deck-${index}`" class="mt-4"/>
   </div>
 </template>
 

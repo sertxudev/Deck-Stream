@@ -4,12 +4,14 @@
 
 <script>
 export default {
-  props: ['id'],
+  props: ['id', 'index', 'preview'],
+  data() {
+    return {
+      interval: null
+    }
+  },
   mounted() {
     $(this.$el).hide()
-  },
-  updated() {
-    setInterval(() => this.$state.images[payload.id].currentTime++, 1000)
   }
 }
 </script>

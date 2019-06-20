@@ -71,6 +71,7 @@ new Vue({
       ipcRenderer.on('get-data', (event) => ipcRenderer.send('get-data', data))
       ipcRenderer.on('get-name', (event) => ipcRenderer.send('get-name', data.name))
       ipcRenderer.on('get-activeDeck', (event) => ipcRenderer.send('get-activeDeck', data.decks[data.activeDeck]))
+      ipcRenderer.on('get-activeDeck-Fade', (event) => ipcRenderer.send('get-activeDeck-Fade', { deck: data.decks[data.activeDeck], fadeDuration: data.fadeDuration }))
 
       ipcRenderer.on('add-output', (event, id) => data.decks[data.activeDeck].outputs.push(id))
       ipcRenderer.on('disable-outputs', (event) => data.decks[data.activeDeck].outputs = [])

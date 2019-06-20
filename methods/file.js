@@ -40,7 +40,7 @@ function processConfig(data) {
           title: deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
         })
 
-        window.loadFile('./dist/livestream.html', { query: { id: deck.id } })
+        window.loadFile('./dist/livestream.html', { query: { id: deck.id, fadeDuration: data.fadeDuration } })
         electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
         if (output.fullscreened) window.setFullScreen(true)
         if (output.maximized) window.maximize()

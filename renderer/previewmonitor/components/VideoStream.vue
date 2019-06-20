@@ -4,30 +4,25 @@
 
 <script>
 export default {
-  props: ['id'],
+  props: ['id', 'index', 'preview'],
   mounted() {
     $(this.$el).hide();
   },
   methods: {
     setSync(event) {
-      // let time_left = event.target.duration - this.$store.state.player.currentTime
-      // if (this.$store.state.player.currentTime > 0.001) {
-      //   if (Math.abs(this.$store.state.player.currentTime - event.target.currentTime) > 0.05) {
-      //     if (this.$store.state.player.currentTime > event.target.currentTime) {
-      //       event.target.playbackRate = 1.3
-      //     } else {
-      //       event.target.playbackRate = 0.7
-      //     }
-      //   } else if (Math.abs(this.$store.state.player.currentTime - event.target.currentTime) > 0.01) {
-      //     if (this.$store.state.player.currentTime > event.target.currentTime) {
-      //       event.target.playbackRate = 1.02
-      //     } else {
-      //       event.target.playbackRate = 0.98
-      //     }
-      //   } else {
-      //     event.target.playbackRate = 1
-      //   }
-      // }
+      const data = (!this.preview) ? this.$store.state.players[this.index] : this.$store.state.playersPreview[this.index]
+      if (!data) return null
+      if (this.preview && !data.loop) {
+        data.currentTime = event.target.currentTime
+        data.remainingTime = event.target.duration - event.target.currentTime
+      }
+
+      let time_left = event.target.duration - data.currentTime
+      if (time_left > 1 && data.currentTime > 0.001) {
+        let time_diff = data.currentTime - event.target.currentTime
+        var compensatingFrameRate = ((Math.min(Math.max((time_diff / 2 + 1), 0.33), 3.00))).toFixed(2)
+        event.target.playbackRate = compensatingFrameRate
+      }
     }
   }
 }
