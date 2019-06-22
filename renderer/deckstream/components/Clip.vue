@@ -1,5 +1,9 @@
 <template>
-  <div class="card border-0 ui-state-default" @contextmenu.prevent="openContextClip($event)">
+  <div
+    class="card border-0 ui-state-default"
+    @contextmenu.prevent="openContextClip($event)"
+    :id="id"
+  >
     <template>
       <video
         :src="clip.path + '#t=' + clip.posterTime"
@@ -29,10 +33,10 @@
 
 <script>
 import { ipcRenderer, remote } from "electron";
-const { Menu, MenuItem } = remote;
+const { Menu, MenuItem, dialog } = remote;
 
 export default {
-  props: ["clip"],
+  props: ["id", "clip"],
   computed: {
     getActiveDeckId() {
       let data = this.$store.state.data
@@ -70,21 +74,31 @@ export default {
       // console.log('openContextClip', event)
       let element = event.target.parentNode;
       if (!element.classList.contains("card")) element = element.parentNode
+      let data = this.$store.state.data
+      let groupID = element.id.split('clip-').pop().split('-').shift()
+      let clipID = element.id.split('clip-').pop().split('-').pop()
+      // console.log(element, data.decks[data.activeDeck].groups[groupID].clips[clipID])
 
-      const menu = new Menu();
-      // const methods = require("../../context-menu/clips");
-      // menu.append(new MenuItem({ label: 'Settings', click: () => methods.openSettings(element) }))
-      // menu.append(new MenuItem({ label: event }));
-      menu.append(
-        new MenuItem({
-          label: "Settings",
-          click: () => ipcRenderer.send("clips-settings", event)
-        })
-      );
-      // // menu.append(new MenuItem({ label: 'Settings', click: () => { console.log('Settings - Group ' + element.id.split('-')[1] + ' - Clip ' + element.id.split('-')[2]) } }))
-      // // menu.append(new MenuItem({ label: 'Remove', click: () => { console.log('Remove - Group ' + element.id.split('-')[1] + ' - Clip ' + element.id.split('-')[2]) } }))
+      const menu = new Menu()
+      menu.append(new MenuItem({
+        label: "Edit Clip...",
+        click: () => {
+          let clip = data.decks[data.activeDeck].groups[groupID].clips[clipID]
+          ipcRenderer.send("open-edit-clip", { clip: clip, dIndex: data.activeDeck, gIndex: groupID, cIndex: clipID })
+        }
+      }))
 
-      menu.popup({ window: remote.getCurrentWindow() });
+      menu.append(new MenuItem({
+        label: "Remove Clip",
+        click: () => {
+          let clip = data.decks[data.activeDeck].groups[groupID].clips[clipID]
+          let action = dialog.showMessageBoxSync(remote.getCurrentWindow(), { type: "warning", title: "Remove clip", message: `Are you sure you want to remove the clip named "${clip.name}"?`, buttons: ["No", "Yes"], noLink: true })
+          if (action == 0) return null
+          data.decks[data.activeDeck].groups[groupID].clips.splice(clipID, 1)
+        }
+      }))
+
+      menu.popup({ window: remote.getCurrentWindow() })
     }
   }
 };

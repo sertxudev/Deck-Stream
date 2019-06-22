@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Add Clip</title>
+  <title>Edit Clip</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -13,14 +13,6 @@
 
   <div class="container">
     <div class="row mt-3">
-      <div class="col-12">
-        <div class="form-group">
-          <label for="file">Asset</label>
-          <button id="file" class="form-control">Select file...</button>
-        </div>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-12">
         <div class="form-group">
           <label for="name">Name</label>
@@ -33,14 +25,6 @@
         <div class="form-group">
           <label for="posterTime">Poster Time</label>
           <input type="number" class="form-control" id="posterTime" placeholder="0">
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="form-group">
-          <label for="group">Group</label>
-          <select name="group" id="group" class="form-control"></select>
         </div>
       </div>
     </div>
@@ -83,60 +67,31 @@
   <script>
     const { ipcRenderer, remote } = require('electron')
     let data = {}
-    let filePath = ''
 
-    document.getElementById('file').addEventListener('click', () => {
-      let file = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
-        filters: [{
-          extensions: [
-            'mp4', 'webm', 'ogg', // Video Extensions
-            'jpg', 'jpeg', 'png', 'gif' // Image Extensions
-          ]
-        }],
-        properties: ['openFile']
-      })
-
-      if (file !== undefined) {
-        document.getElementById('file').innerText = file[0].split('\\').pop()
-        filePath = file[0]
-          .replace('#', '%23')
-          .replace('(', '%28')
-          .replace(')', '%29')
-          .replace('+', '%2B')
-          .replace('@', '%40')
-      }
-    })
-
-    ipcRenderer.on('get-groups', (event, data) => {
-      let groups = ''
-      // groups += '<option value="-1" disabled selected hidden>Group to be added</option>'
-      data.forEach((el, index) => groups += '<option value="' + index + '">' + el.name + '</option>')
-      document.getElementById('group').innerHTML = groups
-    })
+    const urlParams = new URLSearchParams(window.location.search)
+    document.getElementById('name').value = urlParams.get('name')
+    document.getElementById('posterTime').value = parseInt(urlParams.get('posterTime'))
+    document.getElementById('loop').checked = urlParams.get('loop') == "true"
+    document.getElementById('pauseOnEnd').checked = urlParams.get('pauseOnEnd') == "true"
+    document.getElementById('enableFade').checked = urlParams.get('enableFade') == "true"
 
     document.getElementById('submit').addEventListener('click', () => {
       let name = document.getElementById('name').value
-      let posterTime = document.getElementById('posterTime').value
-      let group = document.getElementById('group').value
+      let posterTime = parseInt(document.getElementById('posterTime').value)
       let loop = document.getElementById('loop').checked
       let pauseOnEnd = document.getElementById('pauseOnEnd').checked
       let enableFade = document.getElementById('enableFade').checked
-
-      if (!group || group == -1) {
-        document.getElementById('group').classList.add('invalid')
-        return false
-      }
 
       if (!name.trim().length) {
         document.getElementById('name').classList.add('invalid')
         return false
       }
 
-      ipcRenderer.send('add-clip', { cancelled: false, path: filePath, name, posterTime, group: parseInt(group), loop, pauseOnEnd, enableFade })
+      ipcRenderer.send('edit-clip', { cancelled: false, name, posterTime, loop, pauseOnEnd, enableFade })
     })
 
     document.getElementById('cancel').addEventListener('click', () => {
-      ipcRenderer.send('add-clip', { cancelled: true })
+      ipcRenderer.send('edit-clip', { cancelled: true })
     })
 
   </script>

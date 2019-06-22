@@ -4,6 +4,7 @@
       :clip="clip"
       v-for="(clip, cIndex) in getActiveDeckClips"
       :key="`clip-${gIndex}-${cIndex}`"
+      :id="`clip-${gIndex}-${cIndex}`"
     />
   </draggable>
 </template>

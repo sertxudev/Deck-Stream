@@ -18,16 +18,41 @@ function addNew(menuItem, window) {
   })
   modal.setMenu(null)
 
-  modal.on('close', () => ipcMain.removeListener('add-clip', addClip))
+  modal.on('close', () => ipcMain.removeListener('add-clip', listener))
 
-  ipcMain.once('add-clip', addClip)
+  ipcMain.once('add-clip', listener)
 
-  function addClip(event, argv) {
+  function listener(event, argv) {
     modal.destroy()
 
     if (!argv.cancelled) {
       global.win.focus()
-      global.win.send('add-clip', { name: argv.name, path: argv.path, group: argv.group, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd })
+      global.win.send('add-clip', { name: argv.name, posterTime: argv.posterTime, path: argv.path, group: argv.group, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
+      return true
+    }
+
+    return false
+  }
+}
+
+function editClip(clip, dIndex, gIndex, cIndex) {
+  let modal = new BrowserWindow({
+    height: 390, width: 400, parent: global.win, minimizable: false, modal: true,
+    maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
+  })
+  modal.loadFile('./modals/edit-clip/index.html', { query: { name: clip.name, posterTime: clip.posterTime, loop: clip.loop, pauseOnEnd: clip.pauseOnEnd, enableFade: clip.enableFade } })
+  modal.once('ready-to-show', () => modal.show())
+  modal.setMenu(null)
+
+  modal.on('close', () => ipcMain.removeListener('edit-clip', listener))
+  ipcMain.once('edit-clip', listener)
+
+  function listener(event, argv) {
+    modal.destroy()
+
+    if (!argv.cancelled) {
+      global.win.focus()
+      global.win.send('edit-clip', { name: argv.name, posterTime: argv.posterTime, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade, dIndex, gIndex, cIndex })
       return true
     }
 
@@ -36,3 +61,4 @@ function addNew(menuItem, window) {
 }
 
 module.exports.addNew = addNew
+module.exports.editClip = editClip

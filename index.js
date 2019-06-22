@@ -97,3 +97,5 @@ app.on('activate', () => {
   // icono del dock es clicado y no hay otras ventanas abiertas.
   if (global.win === null) createWindow()
 })
+
+ipcMain.on('open-edit-clip', (event, argv) => methods.clips.editClip(argv.clip, argv.dIndex, argv.gIndex, argv.cIndex))

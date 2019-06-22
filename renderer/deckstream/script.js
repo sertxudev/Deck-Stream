@@ -48,7 +48,7 @@ const store = new Vuex.Store({
       state.players[index].remainingTime = payload.remainingTime
     },
     addPlayer(state, payload) {
-      state.players.push({ id: payload.id, src: "", loop: false, pauseOnEnd: true, previewSrc: "", currentTime: null, remainingTime: null })
+      state.players.push({ id: payload.id, src: "", loop: false, pauseOnEnd: true, enableFade: false, previewSrc: "", currentTime: null, remainingTime: null })
     },
     updateFadeDuration(state, fadeDuration) {
       state.data.fadeDuration = fadeDuration
@@ -89,7 +89,15 @@ new Vue({
       })
 
       ipcRenderer.on('add-clip', (event, argv) => {
-        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: 0, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd})
+        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: argv.posterTime, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
+      })
+
+      ipcRenderer.on('edit-clip', (event, argv) => {
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].name = argv.name
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].posterTime = argv.posterTime
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].loop = argv.loop
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].pauseOnEnd = argv.pauseOnEnd
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].enableFade = argv.enableFade
       })
 
       ipcRenderer.on('add-deck', (event, argv) => {
