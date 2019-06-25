@@ -3,7 +3,39 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require('path');
 
-module.exports = {
+const modules = {
+  rules: [
+    {
+      test: /\.vue$/,
+      use: {
+        loader: 'vue-loader',
+        options: {
+          extractCSS: true,
+          loaders: {
+            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
+            scss: 'vue-style-loader!css-loader!sass-loader',
+            less: 'vue-style-loader!css-loader!less-loader'
+          }
+        }
+      }
+    },
+    {
+      test: /\.html$/,
+      use: 'vue-html-loader'
+    },
+    {
+      test: /\.js$/,
+      use: 'babel-loader',
+      exclude: [/node_modules/]
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'vue-style-loader', MiniCssExtractPlugin.loader, 'css-loader']
+    }
+  ]
+}
+
+const electron = {
   target: 'electron-renderer',
   entry: {
     main: './index.js',
@@ -16,37 +48,7 @@ module.exports = {
     libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, 'dist')
   },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            extractCSS: true,
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
-            }
-          }
-        }
-      },
-      {
-        test: /\.html$/,
-        use: 'vue-html-loader'
-      },
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: [/node_modules/]
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'vue-style-loader', MiniCssExtractPlugin.loader, 'css-loader']
-      }
-    ]
-  },
+  module: modules,
   node: {
     __dirname: false,
     __filename: false
@@ -99,3 +101,40 @@ module.exports = {
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   }
 }
+
+const remote = {
+  target: 'web',
+  entry: {
+    remotecontrol: './renderer/remotecontrol/script.js',
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: modules,
+  plugins: [
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({ filename: '[name].css' }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['remotecontrol'],
+      template: "./renderer/remotecontrol/index.html",
+      filename: __dirname + "/dist/remotecontrol.html",
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true
+      },
+      nodeModules: false
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@': path.join(__dirname, '../renderer'),
+      'vue$': 'vue/dist/vue.esm.js'
+    },
+    extensions: ['.js', '.vue', '.json', '.css', '.node']
+  }
+}
+
+module.exports = [electron, remote]
