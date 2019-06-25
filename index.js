@@ -42,7 +42,7 @@ function createWindow() {
   if (process.argv[1]) methods.application.openWith()
 
   ipcMain.on('load-data', (event, arg) => {
-    global.winout.forEach(deck => deck.forEach(window => window.destroy()))
+    Object.keys(global.winout).forEach(deck => global.winout[deck].forEach(window => window.destroy()))
 
     let data = (!global.filePath || global.filePath == '.') ? methods.project.getBlank() : methods.file.loadFile(global.filePath)
     global.win.setTitle(`Deck Stream - ${data.name}`)
