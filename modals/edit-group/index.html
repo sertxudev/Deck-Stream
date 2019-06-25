@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Edit Clip</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" placeholder="Name">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 text-right">
+        <button id="cancel" class="btn btn-secondary">Cancel</button>
+        <button id="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { ipcRenderer, remote } = require('electron')
+    let data = {}
+
+    const urlParams = new URLSearchParams(window.location.search)
+    document.getElementById('name').value = urlParams.get('name')
+    
+    document.getElementById('submit').addEventListener('click', () => {
+      let name = document.getElementById('name').value
+      
+      if (!name.trim().length) {
+        document.getElementById('name').classList.add('invalid')
+        return false
+      }
+
+      ipcRenderer.send('edit-group', { cancelled: false, name })
+    })
+
+    document.getElementById('cancel').addEventListener('click', () => {
+      ipcRenderer.send('edit-group', { cancelled: true })
+    })
+
+  </script>
+</body>
+
+</html>
