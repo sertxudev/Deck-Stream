@@ -1,7 +1,13 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron')
 const methods = require('./methods/methods')
-const wallpaper = require('wallpaper');
+const wallpaper = require('wallpaper')
+const fs = require('fs')
+const express = require('express')
+const server = express()
+const http = require('http').Server(server)
+const io = require('socket.io')(http)
+
 let originalWallpaper = null
 
 global.win = null
@@ -41,23 +47,8 @@ function createWindow() {
     let data = (!global.filePath || global.filePath == '.') ? methods.project.getBlank() : methods.file.loadFile(global.filePath)
     global.win.setTitle(`Deck Stream - ${data.name}`)
     event.returnValue = data
+    io.emit('forceUpdate', data)
   })
-
-  // ipcMain.on('enable-stream', (event, arg) => {
-  //   if (!global.winout.length || !global.winout[arg.deck].length) return false
-  //   global.winout[arg.deck].forEach((output) => {
-  //     if (!output) return null
-  //     output.webContents.send('enable-stream', arg.url)
-  //   })
-  // })
-
-  // ipcMain.on('set-preload', (event, arg) => {
-  //   if (!global.winout.length || !global.winout[arg.deck].length) return false
-  //   global.winout[arg.deck].forEach((output) => {
-  //     if (!output) return null
-  //     output.webContents.send('set-preload', arg.url)
-  //   })
-  // })
 
   ipcMain.on('getDecksIds', (event) => {
     global.win.webContents.send('get-data')
@@ -73,6 +64,43 @@ function createWindow() {
   globalShortcut.register('mediaplaypause', () => null)
 
   methods.events.enableEvents()
+
+  server.use(express.static('dist'))
+
+  server.get('/', function (req, res) {
+    res.sendFile(__dirname + '/dist/remotecontrol.html')
+  })
+
+  server.get('/file', function (req, res) {
+    res.sendFile(req.query.url)
+  })
+
+  io.on('connection', (socket) => {
+    global.win.webContents.send('get-data')
+    ipcMain.once('get-data', (event, data) => {
+      socket.emit('getData', data)
+    })
+
+    socket.on('refreshData', () => {
+      global.win.webContents.send('get-data')
+      ipcMain.once('get-data', (event, data) => {
+        socket.emit('getData', data)
+      })
+    })
+
+    socket.on('changeSource', (data) => {
+      global.win.webContents.send('changeSource', data)
+    })
+  })
+
+  http.listen(3000, function () {
+    console.log('listening on *:3000')
+  })
+
+  ipcMain.on('update-data', (event, data) => io.emit('getData', data))
+  ipcMain.on('current-live', (event, data) => io.emit('currentLive', data))
+  ipcMain.on('update-current-time', (event, data) => io.emit('updateCurrentTime', data))
+  ipcMain.on('update-remaining-time', (event, data) => io.emit('updateRemainingTime', data))
 }
 
 // app.disableHardwareAcceleration()
