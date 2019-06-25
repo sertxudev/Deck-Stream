@@ -5,6 +5,7 @@ const fs = require('fs')
 const config = require('./config')
 const displays = require('./displays')
 const project = require('./project')
+const path = require('path')
 
 function openBrowser() {
   return dialog.showOpenDialogSync({ properties: ['openFile'], filters: [{ name: 'Deck Stream File', extensions: ['dsf'] }] })
@@ -40,7 +41,7 @@ function processConfig(data) {
           title: deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
         })
 
-        window.loadFile(path.join(__dirname, './dist/livestream.html'), { query: { id: deck.id, fadeDuration: data.fadeDuration } })
+        window.loadFile(path.join(__dirname, '/livestream.html'), { query: { id: deck.id, fadeDuration: data.fadeDuration } })
         electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
         if (output.fullscreened) window.setFullScreen(true)
         if (output.maximized) window.maximize()

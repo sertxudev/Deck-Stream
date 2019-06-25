@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron')
+const path = require('path')
 
 function addNew(menuItem, window) {
   let modal = new BrowserWindow({

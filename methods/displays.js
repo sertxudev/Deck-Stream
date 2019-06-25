@@ -1,6 +1,7 @@
 const electron = require('electron')
 const { BrowserWindow, ipcMain, Menu } = require('electron')
 const electronLocalshortcut = require('electron-localshortcut')
+const path = require('path')
 
 function getFullscreenDisplays() {
   let displays = getDisplays()
@@ -53,7 +54,7 @@ function createOutput(menuItem) {
         title: argv.deck.name, backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
       })
 
-      window.loadFile(path.join(__dirname, './dist/livestream.html'), { query: { id: argv.deck.id, fadeDuration: fade.fadeDuration } })
+      window.loadFile(path.join(__dirname, '/livestream.html'), { query: { id: argv.deck.id, fadeDuration: fade.fadeDuration } })
       electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
       if (menuItem.accelerator) window.setFullScreen(true)
       // window.setMenu(null)
@@ -75,7 +76,7 @@ function createPreviewMonitorOutput(menuItem) {
       backgroundColor: '#000', parent: global.win, webPreferences: { nodeIntegration: true }
     })
 
-    window.loadFile(path.join(__dirname, './dist/previewmonitor.html'), { query: { fadeDuration: argv.fadeDuration } })
+    window.loadFile(path.join(__dirname, '/previewmonitor.html'), { query: { fadeDuration: argv.fadeDuration } })
     electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
     if (menuItem.accelerator) window.setFullScreen(true)
     // window.setMenu(null)
