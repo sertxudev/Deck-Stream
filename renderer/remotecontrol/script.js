@@ -28,13 +28,10 @@ const store = new Vuex.Store({
     mounted: false
   },
   mutations: {
-    changeSource(state, payload) {
-      console.log('changeSource', payload)
-    },
     currentLive(state, payload) {
       let index = null
       state.players.forEach((player, pos) => { if (player.id === this.getActiveDeckId) index = pos })
-      console.log('currentLive', payload)
+      // console.log('currentLive', payload)
       // let index = state.players.findIndex((player) => player === payload.id)
       clearInterval(state.images[index].interval)
       clearInterval(state.videos[index].interval)
