@@ -2,14 +2,14 @@
   "name": "deckstream",
   "version": "0.0.1",
   "description": "Video streaming software designed for live events",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "dev": "webpack --mode development && npm start",
     "prod": "webpack --mode production && npm start",
     "pack": "webpack --mode production && electron-builder --dir",
-    "dist": "webpack --mode production && electron-builder"
+    "dist": "webpack --mode production && electron-builder --ia32 --x64"
   },
   "author": "Sertxu Developer <dev.sertxu@gmail.com>",
   "license": "MIT",
@@ -48,7 +48,9 @@
     "@vue/devtools": "^5.1.0",
     "babel-loader": "^8.0.6",
     "babel-preset-env": "^1.7.0",
+    "babili-webpack-plugin": "^0.1.2",
     "bootstrap": "^4.3.1",
+    "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^6.0.0-beta.10",

@@ -1,7 +1,10 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const path = require('path')
+const { dependencies } = require('./package.json')
 
 const modules = {
   rules: [
@@ -35,10 +38,57 @@ const modules = {
   ]
 }
 
-const electron = {
-  target: 'electron-renderer',
+const electron_main = {
+  target: 'electron-main',
   entry: {
     main: './index.js',
+  },
+  output: {
+    filename: '[name].js',
+    libraryTarget: 'commonjs2',
+    path: path.resolve(__dirname, 'dist')
+  },
+  externals: [
+    ...Object.keys(dependencies || {}),
+    'child_process'
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.node$/,
+        use: 'node-loader'
+      },
+      // {
+      //   test: /\.js$/,
+      //   use: 'babel-loader',
+      //   exclude: [/node_modules/]
+      // },
+    ]
+  },
+  node: {
+    __dirname: false,
+    __filename: false
+  },
+  resolve: {
+    extensions: ['.js', '.json', '.node']
+  },
+  optimization: {
+    minimize: false,
+  },
+  // plugins: [
+  //   new CopyWebpackPlugin([
+  //     {
+  //       from: path.join(__dirname, './renderer/remotecontrol'),
+  //       to: path.join(__dirname, '../dist/electron/static'),
+  //       ignore: ['.*']
+  //     }
+  //   ])
+  // ]
+}
+
+const electron_renderer = {
+  target: 'electron-renderer',
+  entry: {
     deckstream: './renderer/deckstream/script.js',
     livestream: './renderer/livestream/script.js',
     previewmonitor: './renderer/previewmonitor/script.js',
@@ -99,6 +149,9 @@ const electron = {
       'vue$': 'vue/dist/vue.esm.js'
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
+  },
+  optimization: {
+    minimize: false,
   }
 }
 
@@ -137,4 +190,4 @@ const remote = {
   }
 }
 
-module.exports = [electron, remote]
+module.exports = [electron_main, electron_renderer, remote]

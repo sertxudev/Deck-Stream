@@ -2,11 +2,11 @@ const electron = require('electron')
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron')
 const methods = require('./methods/methods')
 const wallpaper = require('wallpaper')
-const fs = require('fs')
 const express = require('express')
 const server = express()
 const http = require('http').Server(server)
-const io = require('socket.io')(http)
+const io = require('socket.io')(http, { serveClient: false })
+const path = require('path')
 
 let originalWallpaper = null
 
@@ -65,10 +65,10 @@ function createWindow() {
 
   methods.events.enableEvents()
 
-  server.use(express.static('dist'))
+  server.use(express.static(__dirname))
 
   server.get('/', function (req, res) {
-    res.sendFile(__dirname + '/dist/remotecontrol.html')
+    res.sendFile(path.join(__dirname,'remotecontrol.html'))
   })
 
   server.get('/file', function (req, res) {
