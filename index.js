@@ -20,7 +20,7 @@ function createWindow() {
   wallpaper.set('./assets/black.jpg')
 
   global.win = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true, webSecurity: false }, show: false })
-  global.win.loadFile('./dist/deckstream.html')
+  global.win.loadFile(path.join(__dirname, './deckstream.html'))
   // win.webContents.openDevTools({ mode: 'detach' })
 
   global.win.webContents.on('did-finish-load', () => win.show())

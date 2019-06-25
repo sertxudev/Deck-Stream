@@ -75,15 +75,15 @@ const electron_main = {
   optimization: {
     minimize: false,
   },
-  // plugins: [
-  //   new CopyWebpackPlugin([
-  //     {
-  //       from: path.join(__dirname, './renderer/remotecontrol'),
-  //       to: path.join(__dirname, '../dist/electron/static'),
-  //       ignore: ['.*']
-  //     }
-  //   ])
-  // ]
+  plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, './modals'),
+        to: path.join(__dirname, './dist/modals'),
+        ignore: ['.*']
+      }
+    ])
+  ]
 }
 
 const electron_renderer = {

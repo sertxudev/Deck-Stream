@@ -5,7 +5,7 @@ function addNew(menuItem, window) {
     height: 600, width: 400, parent: window, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
-  modal.loadFile('./modals/add-clip/index.html')
+  modal.loadFile(path.join(__dirname, '/modals/add-clip/index.html'))
   modal.once('ready-to-show', () => {
     global.win.webContents.send('get-data')
 
@@ -40,7 +40,7 @@ function editClip(clip, dIndex, gIndex, cIndex) {
     height: 435, width: 400, parent: global.win, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
-  modal.loadFile('./modals/edit-clip/index.html', { query: { name: clip.name, posterTime: clip.posterTime, loop: clip.loop, pauseOnEnd: clip.pauseOnEnd, enableFade: clip.enableFade } })
+  modal.loadFile(path.join(__dirname, '/modals/edit-clip/index.html'), { query: { name: clip.name, posterTime: clip.posterTime, loop: clip.loop, pauseOnEnd: clip.pauseOnEnd, enableFade: clip.enableFade } })
   modal.once('ready-to-show', () => modal.show())
   modal.setMenu(null)
 

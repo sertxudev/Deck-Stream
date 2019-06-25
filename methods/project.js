@@ -100,7 +100,7 @@ function changeSettings(menuItem, window) {
       height: 420, width: 400, modal: true, alwaysOnTop: true, parent: window, minimizable: false,
       maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
     })
-    modal.loadFile('./modals/settings/index.html', { query: { name: argv.name, description: argv.description, fadeDuration: argv.fadeDuration } })
+    modal.loadFile(path.join(__dirname, './modals/settings/index.html'), { query: { name: argv.name, description: argv.description, fadeDuration: argv.fadeDuration } })
     modal.once('ready-to-show', () => modal.show())
     modal.setMenu(null)
     modal.on('close', () => ipcMain.removeListener('save-settings', saveSettingsEvent))

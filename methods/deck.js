@@ -5,7 +5,7 @@ function addNew(menuItem, window) {
     height: 280, width: 400, parent: window, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
-  modal.loadFile('./modals/add-deck/index.html')
+  modal.loadFile(path.join(__dirname, './modals/add-deck/index.html'))
   modal.once('ready-to-show', () => {
     global.win.webContents.send('get-data')
 

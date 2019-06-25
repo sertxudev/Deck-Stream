@@ -5,7 +5,7 @@ function addNew(menuItem, window) {
     height: 280, width: 400, parent: window, minimizable: false,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
-  modal.loadFile('./modals/add-group/index.html')
+  modal.loadFile(path.join(__dirname, './modals/add-group/index.html'))
   modal.once('ready-to-show', () => {
     global.win.webContents.send('get-data')
 
@@ -40,7 +40,7 @@ function editGroup(group, dIndex, gIndex) {
     height: 180, width: 400, parent: global.win, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
-  modal.loadFile('./modals/edit-group/index.html', { query: { name: group.name } })
+  modal.loadFile(path.join(__dirname, './modals/edit-group/index.html'), { query: { name: group.name } })
   modal.once('ready-to-show', () => modal.show())
   modal.setMenu(null)
 
