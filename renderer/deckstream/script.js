@@ -42,17 +42,19 @@ const store = new Vuex.Store({
     updateCurrentTime(state, payload) {
       let index = state.players.findIndex((player) => player.id === payload.id)
       state.players[index].currentTime = payload.currentTime
+      ipcRenderer.send('update-current-time', { index, ...payload })
     },
     updateRemainingTime(state, payload) {
       let index = state.players.findIndex((player) => player.id === payload.id)
       state.players[index].remainingTime = payload.remainingTime
+      ipcRenderer.send('update-remaining-time', { index, ...payload })
     },
     addPlayer(state, payload) {
       state.players.push({ id: payload.id, src: "", loop: false, pauseOnEnd: true, enableFade: false, previewSrc: "", currentTime: null, remainingTime: null })
     },
     updateFadeDuration(state, fadeDuration) {
       state.data.fadeDuration = fadeDuration
-    }
+    },
   },
   plugins: [sharedMutations({ predicate: ['changeSource', 'changePreviewSource', 'updateCurrentTime', 'updateRemainingTime', 'updateFadeDuration'] })]
 })
@@ -89,24 +91,41 @@ new Vue({
       })
 
       ipcRenderer.on('add-clip', (event, argv) => {
-        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, posterTime: argv.posterTime, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
+        data.decks[data.activeDeck].groups[argv.group].clips.push({ name: argv.name, path: argv.path, color: argv.color, posterTime: argv.posterTime, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
+        ipcRenderer.send('update-data', data)
       })
 
       ipcRenderer.on('edit-clip', (event, argv) => {
         data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].name = argv.name
         data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].posterTime = argv.posterTime
+        data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].color = argv.color
         data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].loop = argv.loop
         data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].pauseOnEnd = argv.pauseOnEnd
         data.decks[argv.dIndex].groups[argv.gIndex].clips[argv.cIndex].enableFade = argv.enableFade
+        ipcRenderer.send('update-data', data)
       })
 
       ipcRenderer.on('add-deck', (event, argv) => {
         let generatedID = Math.random().toString(36).substr(2, 9)
         data.decks.splice(argv.position, 0, { id: generatedID, name: argv.name, groups: [], outputs: [] })
         this.$store.commit('addPlayer', { id: generatedID })
+        ipcRenderer.send('update-data', data)
       })
 
-      ipcRenderer.on('add-group', (event, argv) => data.decks[data.activeDeck].groups.splice(argv.position, 0, { name: argv.name, clips: [] }))
+      ipcRenderer.on('add-group', (event, argv) => {
+        data.decks[data.activeDeck].groups.splice(argv.position, 0, { name: argv.name, clips: [] })
+        ipcRenderer.send('update-data', data)
+      })
+
+      ipcRenderer.on('edit-group', (event, argv) => {
+        data.decks[argv.dIndex].groups[argv.gIndex].name = argv.name
+        ipcRenderer.send('update-data', data)
+      })
+
+      ipcRenderer.on('changeSource', (event, data) => {
+        this.$store.commit('changeSource', data)
+        ipcRenderer.send('current-live', data)
+      })
     }
   },
   created() {

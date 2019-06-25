@@ -30,7 +30,6 @@ const store = new Vuex.Store({
       if (deckID !== payload.id) return null
 
       let enabledFade = payload.enableFade || state.previousEnableFade
-      console.log(payload.enableFade || state.previousEnableFade, payload.enableFade, state.previousEnableFade)
       state.previousEnableFade = payload.enableFade
 
       state.player.id = (state.player.id == 'videoA') ? 'videoB' : 'videoA'
@@ -67,6 +66,8 @@ const store = new Vuex.Store({
               $(`#${state.player.id}`).hide()
               $(`#${state.player.id}`)[0].src = ''
             }
+          } else {
+            $(`#${state.player.id}`)[0].onended = null
           }
 
           if (enabledFade) $('#blackout').fadeOut(state.fadeDuration / 2)

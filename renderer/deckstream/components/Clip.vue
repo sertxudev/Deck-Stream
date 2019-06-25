@@ -95,6 +95,7 @@ export default {
           let action = dialog.showMessageBoxSync(remote.getCurrentWindow(), { type: "warning", title: "Remove clip", message: `Are you sure you want to remove the clip named "${clip.name}"?`, buttons: ["No", "Yes"], noLink: true })
           if (action == 0) return null
           data.decks[data.activeDeck].groups[groupID].clips.splice(clipID, 1)
+          ipcRenderer.send('update-data', data)
         }
       }))
 

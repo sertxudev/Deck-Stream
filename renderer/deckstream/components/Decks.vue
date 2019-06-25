@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
+
 import draggable from "vuedraggable";
 import Deck from "./Deck";
 
@@ -31,6 +33,7 @@ export default {
   methods: {
     onDraggedDecks: function(event) {
       this.$store.state.data.activeDeck = event.newIndex;
+      ipcRenderer.send('update-data', this.$store.state.data)
     }
   }
 };

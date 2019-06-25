@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require('electron'
 
 function addNew(menuItem, window) {
   let modal = new BrowserWindow({
-    height: 390, width: 400, parent: window, minimizable: false, modal: true,
+    height: 600, width: 400, parent: window, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/add-clip/index.html')
@@ -27,7 +27,7 @@ function addNew(menuItem, window) {
 
     if (!argv.cancelled) {
       global.win.focus()
-      global.win.send('add-clip', { name: argv.name, posterTime: argv.posterTime, path: argv.path, group: argv.group, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
+      global.win.send('add-clip', { name: argv.name, posterTime: argv.posterTime, color: argv.color, path: argv.path, group: argv.group, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade })
       return true
     }
 
@@ -37,7 +37,7 @@ function addNew(menuItem, window) {
 
 function editClip(clip, dIndex, gIndex, cIndex) {
   let modal = new BrowserWindow({
-    height: 390, width: 400, parent: global.win, minimizable: false, modal: true,
+    height: 435, width: 400, parent: global.win, minimizable: false, modal: true,
     maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
   })
   modal.loadFile('./modals/edit-clip/index.html', { query: { name: clip.name, posterTime: clip.posterTime, loop: clip.loop, pauseOnEnd: clip.pauseOnEnd, enableFade: clip.enableFade } })
@@ -52,7 +52,7 @@ function editClip(clip, dIndex, gIndex, cIndex) {
 
     if (!argv.cancelled) {
       global.win.focus()
-      global.win.send('edit-clip', { name: argv.name, posterTime: argv.posterTime, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade, dIndex, gIndex, cIndex })
+      global.win.send('edit-clip', { name: argv.name, posterTime: argv.posterTime, color: argv.color, loop: argv.loop, pauseOnEnd: argv.pauseOnEnd, enableFade: argv.enableFade, dIndex, gIndex, cIndex })
       return true
     }
 

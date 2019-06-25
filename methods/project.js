@@ -1,5 +1,6 @@
 const { BrowserWindow, ipcMain, dialog } = require('electron')
 const fs = require('fs')
+const path = require('path')
 const config = require('./config')
 const file = require('./file')
 const menu = require('./menu')
@@ -9,7 +10,7 @@ function getBlank() {
   return {
     "name": "undefined", "description": null, "decks": [{
       "id": "py4q7bzrb", "name": "Deck 1", "outputs": [], "groups": [{
-        "name": "Group 1", "clips": [{ "path": "../assets/black.jpg", "name": "Blackout" }]
+        "name": "Group 1", "clips": [{ "path": path.join(__dirname, "../assets/black.jpg"), "name": "Blackout" }]
       }]
     }],
     "activeDeck": 0,
@@ -92,7 +93,7 @@ function saveAs() {
 
 function changeSettings(menuItem, window) {
   let modal
-    
+
   window.webContents.send('get-data')
   ipcMain.once('get-data', (event, argv) => {
     modal = new BrowserWindow({

@@ -35,4 +35,30 @@ function addNew(menuItem, window) {
   }
 }
 
+function editGroup(group, dIndex, gIndex) {
+  let modal = new BrowserWindow({
+    height: 180, width: 400, parent: global.win, minimizable: false, modal: true,
+    maximizable: false, resizable: false, show: false, webPreferences: { nodeIntegration: true }
+  })
+  modal.loadFile('./modals/edit-group/index.html', { query: { name: group.name } })
+  modal.once('ready-to-show', () => modal.show())
+  modal.setMenu(null)
+
+  modal.on('close', () => ipcMain.removeListener('edit-group', listener))
+  ipcMain.once('edit-group', listener)
+
+  function listener(event, argv) {
+    modal.destroy()
+
+    if (!argv.cancelled) {
+      global.win.focus()
+      global.win.send('edit-group', { name: argv.name, dIndex, gIndex })
+      return true
+    }
+
+    return false
+  }
+}
+
 module.exports.addNew = addNew
+module.exports.editGroup = editGroup

@@ -1,6 +1,5 @@
 <template>
-  <audio :src="player.src" controls @timeupdate="onTimeUpdate" :loop="player.loop"></audio>
-  <!-- <video :src="player.src" controls @timeupdate="onTimeUpdate"></video> -->
+  <audio :src="player.src" controls @timeupdate="onTimeUpdate" :loop="player.loop" class="d-none"></audio>
 </template>
 
 <script>
@@ -22,11 +21,7 @@ export default {
   },
   updated() {
     this.clearTimes()
-    // console.log('fadeDuration', this.$store.state.data.fadeDuration)
-    // setTimeout(() => {
-      // ipcRenderer.send('play-video', { deck: this.player.id })
-      this.$el.play()
-    // }, this.$store.state.data.fadeDuration / 2)
+    this.$el.play()
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid h-100" id="deckstream" v-cloak>
+  <div class="container-fluid h-100 p-0" id="deckstream" v-cloak>
     <main>
       <Header/>
       <Groups/>

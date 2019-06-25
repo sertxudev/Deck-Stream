@@ -94,6 +94,8 @@ const store = new Vuex.Store({
               $(`#deck-${payload.id} #${state.players[payload.id].id}`).hide()
               $(`#deck-${payload.id} #${state.players[payload.id].id}`)[0].src = ''
             }
+          } else {
+            $(`#${state.player.id}`)[0].onended = null
           }
 
           if (enabledFade) $(`#deck-${payload.id} #blackout`).fadeOut(state.fadeDuration / 2)
@@ -181,6 +183,8 @@ const store = new Vuex.Store({
               $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`).hide()
               $(`#deck-${payload.id}-preview #${state.playersPreview[payload.id].id}`)[0].src = ''
             }
+          } else {
+            $(`#${state.player.id}-preview #${state.playersPreview[payload.id].id}`)[0].onended = null
           }
 
           if (enabledFade) $(`#deck-${payload.id}-preview #blackout`).fadeOut(state.fadeDuration / 2)

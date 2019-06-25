@@ -29,6 +29,14 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="color">Deck Color</label>
+          <input type="color" class="form-control" id="color">
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-6 text-center">
         <div class="form-group">
           <div class="form-check">
@@ -71,6 +79,7 @@
     const urlParams = new URLSearchParams(window.location.search)
     document.getElementById('name').value = urlParams.get('name')
     document.getElementById('posterTime').value = parseInt(urlParams.get('posterTime'))
+    document.getElementById('color').value = urlParams.get('color')
     document.getElementById('loop').checked = urlParams.get('loop') == "true"
     document.getElementById('pauseOnEnd').checked = urlParams.get('pauseOnEnd') == "true"
     document.getElementById('enableFade').checked = urlParams.get('enableFade') == "true"
@@ -78,6 +87,7 @@
     document.getElementById('submit').addEventListener('click', () => {
       let name = document.getElementById('name').value
       let posterTime = parseInt(document.getElementById('posterTime').value)
+      let color = document.getElementById('color').value
       let loop = document.getElementById('loop').checked
       let pauseOnEnd = document.getElementById('pauseOnEnd').checked
       let enableFade = document.getElementById('enableFade').checked
@@ -87,7 +97,7 @@
         return false
       }
 
-      ipcRenderer.send('edit-clip', { cancelled: false, name, posterTime, loop, pauseOnEnd, enableFade })
+      ipcRenderer.send('edit-clip', { cancelled: false, name, posterTime, color, loop, pauseOnEnd, enableFade })
     })
 
     document.getElementById('cancel').addEventListener('click', () => {
