@@ -127,3 +127,4 @@ app.on('activate', () => {
 })
 
 ipcMain.on('open-edit-clip', (event, argv) => methods.clips.editClip(argv.clip, argv.dIndex, argv.gIndex, argv.cIndex))
+ipcMain.on('open-edit-group', (event, argv) => methods.group.editGroup(argv.group, argv.dIndex, argv.gIndex))
