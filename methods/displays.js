@@ -57,7 +57,7 @@ function createOutput(menuItem) {
       window.loadFile(path.join(__dirname, '/livestream.html'), { query: { id: argv.deck.id, fadeDuration: fade.fadeDuration } })
       electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
       if (menuItem.accelerator) window.setFullScreen(true)
-      // window.setMenu(null)
+      window.setMenu(null)
 
       if (!global.winout[argv.deck.id]) global.winout[argv.deck.id] = []
       global.winout[argv.deck.id].push(window)
@@ -79,7 +79,7 @@ function createPreviewMonitorOutput(menuItem) {
     window.loadFile(path.join(__dirname, '/previewmonitor.html'), { query: { fadeDuration: argv.fadeDuration } })
     electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
     if (menuItem.accelerator) window.setFullScreen(true)
-    // window.setMenu(null)
+    window.setMenu(null)
     const menuTemplate = require('../renderer/previewmonitor/menu/menu')
     const menu = Menu.buildFromTemplate(menuTemplate.build())
     window.setMenu(menu)

@@ -45,7 +45,7 @@ function processConfig(data) {
         electronLocalshortcut.register(window, 'F11', () => window.setFullScreen(!window.isFullScreen()))
         if (output.fullscreened) window.setFullScreen(true)
         if (output.maximized) window.maximize()
-        // window.setMenu(null)
+        window.setMenu(null)
         outputs.push(window)
 
         outputsIDs.push(window.id)
